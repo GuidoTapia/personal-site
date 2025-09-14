@@ -17,21 +17,21 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@/components/*": ["src/components/*"],
-      "@/styles/*": ["src/styles/*"],
-      "@/utils/*": ["src/utils/*"],
-      "@/hooks/*": ["src/hooks/*"],
-      "@/images/*": ["src/images/*"]
+      "@": ["src"],
+      "@config": ["src/config"],
+      "@config/*": ["src/config/*"],
+      "@components": ["src/components"],
+      "@components/*": ["src/components/*"],
+      "@styles": ["src/styles"],
+      "@styles/*": ["src/styles/*"],
+      "@utils": ["src/utils"],
+      "@utils/*": ["src/utils/*"],
+      "@hooks": ["src/hooks"],
+      "@hooks/*": ["src/hooks/*"],
+      "@images": ["src/images"],
+      "@images/*": ["src/images/*"]
     }
   },
-  "include": [
-    "src/**/*",
-    "gatsby-*.js",
-    "gatsby-*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "public",
-    ".cache"
-  ]
+  "include": ["src/**/*", "gatsby-*.js", "gatsby-*.ts"],
+  "exclude": ["node_modules", "public", ".cache"]
 }

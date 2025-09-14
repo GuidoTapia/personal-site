@@ -86,7 +86,11 @@ export const createPages: GatsbyNode['createPages'] = async ({ actions, graphql,
 };
 
 // https://www.gatsbyjs.org/docs/node-apis/#onCreateWebpackConfig
-export const onCreateWebpackConfig: GatsbyNode['onCreateWebpackConfig'] = ({ stage, loaders, actions }) => {
+export const onCreateWebpackConfig: GatsbyNode['onCreateWebpackConfig'] = ({
+  stage,
+  loaders,
+  actions,
+}) => {
   // https://www.gatsbyjs.org/docs/debugging-html-builds/#fixing-third-party-modules
   if (stage === 'build-html' || stage === 'develop-html') {
     actions.setWebpackConfig({
@@ -112,6 +116,7 @@ export const onCreateWebpackConfig: GatsbyNode['onCreateWebpackConfig'] = ({ sta
   actions.setWebpackConfig({
     resolve: {
       alias: {
+        '@': path.resolve(__dirname, 'src'),
         '@components': path.resolve(__dirname, 'src/components'),
         '@config': path.resolve(__dirname, 'src/config'),
         '@fonts': path.resolve(__dirname, 'src/fonts'),
