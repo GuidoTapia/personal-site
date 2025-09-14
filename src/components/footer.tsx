@@ -109,7 +109,7 @@ const Footer: React.FC = () => {
       </StyledSocialLinks>
 
       <StyledCredit tabIndex={-1}>
-        <a href="https://github.com/GuidoTapia/personal-site-v4">
+        <a href="https://github.com/GuidoTapia/personal-site">
           <div>Built by Guido Tapia Oré</div>
 
           {githubInfo.stars && githubInfo.forks && (
