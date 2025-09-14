@@ -1,4 +1,15 @@
 {
   "root": true,
-  "extends": "@upstatement/eslint-config/react"
+  "extends": [
+    "@upstatement/eslint-config/react"
+  ],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "no-unused-vars": "off",
+        "no-undef": "off"
+      }
+    }
+  ]
 }

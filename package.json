@@ -1,11 +1,11 @@
 {
   "name": "v4",
-  "description": "Personal Website V4",
+  "description": "Personal Website",
   "version": "1.0.0",
   "author": "Guido Ore <guido.tapia.ore@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GuidoTapia/personal-site-v4"
+    "url": "https://github.com/GuidoTapia/personal-site"
   },
   "keywords": [
     "gatsby"
@@ -15,18 +15,19 @@
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop",
-    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
+    "type-check": "tsc --noEmit",
     "prepare": "husky install",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,css,json,md}": [
+    "*.{js,jsx,ts,tsx,css,json,md}": [
       "prettier --write"
     ],
-    "*.js": [
+    "*.{js,jsx,ts,tsx}": [
       "eslint --fix"
     ]
   },
@@ -51,7 +52,6 @@
     "gatsby-transformer-sharp": "^5.12.0",
     "lodash": "^4.17.21",
     "prismjs": "^1.29.0",
-    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
@@ -63,6 +63,16 @@
     "@babel/core": "^7.23.6",
     "@babel/eslint-parser": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
+    "@types/animejs": "^3.1.13",
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^24.3.3",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@types/react-helmet": "^6.1.11",
+    "@types/react-transition-group": "^4.4.12",
+    "@types/styled-components": "^5.1.34",
+    "@typescript-eslint/eslint-plugin": "^8.43.0",
+    "@typescript-eslint/parser": "^8.43.0",
     "@upstatement/eslint-config": "^1.0.0",
     "@upstatement/prettier-config": "^1.0.0",
     "babel-preset-gatsby": "^3.12.0",
@@ -73,6 +83,7 @@
     "gatsby-remark-code-titles": "^1.1.0",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
-    "prettier": "^3.1.1"
+    "prettier": "^3.1.1",
+    "typescript": "^5.9.2"
   }
 }
