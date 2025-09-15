@@ -32,7 +32,7 @@ const StyledHeader = styled.header<{ scrollDirection: string; scrolledToTop: boo
 
   @media (prefers-reduced-motion: no-preference) {
     ${props =>
-    props.scrollDirection === 'up' &&
+      props.scrollDirection === 'up' &&
       !props.scrolledToTop &&
       css`
         height: var(--nav-scroll-height);
@@ -42,7 +42,7 @@ const StyledHeader = styled.header<{ scrollDirection: string; scrolledToTop: boo
       `};
 
     ${props =>
-    props.scrollDirection === 'down' &&
+      props.scrollDirection === 'down' &&
       !props.scrolledToTop &&
       css`
         height: var(--nav-scroll-height);
@@ -66,8 +66,8 @@ const StyledNav = styled.nav`
 
     a {
       color: var(--green);
-      width: 42px;
-      height: 42px;
+      width: 56px;
+      height: 56px;
       position: relative;
       z-index: 1;
 
@@ -93,6 +93,15 @@ const StyledNav = styled.nav`
           polygon {
             fill: var(--navy);
           }
+        }
+
+        video {
+          position: relative;
+          width: 56px;
+          height: 56px;
+          object-fit: cover;
+          background: transparent;
+          z-index: 2;
         }
       }
 
@@ -188,20 +197,14 @@ const Nav: React.FC<NavProps> = ({ isHome }) => {
     <div className="logo" tabIndex={-1}>
       {isHome ? (
         <a href="/" aria-label="home">
-          <div className="hex-container">
-            <IconHex />
-          </div>
           <div className="logo-container">
-            <IconLogo />
+            <video src="/memoji-guido.webm" autoPlay loop muted />
           </div>
         </a>
       ) : (
         <Link to="/" aria-label="home">
-          <div className="hex-container">
-            <IconHex />
-          </div>
           <div className="logo-container">
-            <IconLogo />
+            <video src="/memoji-guido.webm" autoPlay loop muted />
           </div>
         </Link>
       )}

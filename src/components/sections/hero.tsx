@@ -70,23 +70,14 @@ const Hero: React.FC = () => {
   const four = (
     <>
       <p>
-        I'm a full-stack engineer specializing in React and Node.js, with a background in robotics
-        and mentoring developers. Currently, I focus on delivering reliable, user-focused products
-        and mentoring the next generation of developers.
+        I&apos;m a full-stack engineer specializing in React and Node.js, with a background in
+        robotics and mentoring developers. Currently, I focus on delivering reliable, user-focused
+        products and mentoring the next generation of developers.
       </p>
     </>
   );
-  const five = (
-    <a
-      className="email-link"
-      href="https://www.newline.co/courses/build-a-spotify-connected-app"
-      target="_blank"
-      rel="noreferrer">
-      Check out my course!
-    </a>
-  );
 
-  const items = [one, two, three, four, five];
+  const items = [one, two, three, four];
 
   return (
     <StyledHeroSection>
