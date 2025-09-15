@@ -102,6 +102,17 @@ const StyledNav = styled.nav`
           object-fit: cover;
           background: transparent;
           z-index: 2;
+          animation: bounce 3s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+          0%,
+          100% {
+            transform: translateY(4px);
+          }
+          50% {
+            transform: translateY(-4px);
+          }
         }
       }
 
@@ -193,18 +204,26 @@ const Nav: React.FC<NavProps> = ({ isHome }) => {
   const fadeClass = isHome ? 'fade' : '';
   const fadeDownClass = isHome ? 'fadedown' : '';
 
+  // Detect Safari browser
+  const isSafari = () => {
+    if (typeof window === 'undefined') return false;
+    return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  };
+
+  const videoSrc = isSafari() ? '/memoji-guido.MOV' : '/memoji-guido.webm';
+
   const Logo = (
     <div className="logo" tabIndex={-1}>
       {isHome ? (
         <a href="/" aria-label="home">
           <div className="logo-container">
-            <video src="/memoji-guido.webm" autoPlay loop muted />
+            <video src={videoSrc} autoPlay loop muted playsInline />
           </div>
         </a>
       ) : (
         <Link to="/" aria-label="home">
           <div className="logo-container">
-            <video src="/memoji-guido.webm" autoPlay loop muted />
+            <video src={videoSrc} autoPlay loop muted playsInline />
           </div>
         </Link>
       )}
