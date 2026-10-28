@@ -2,7 +2,6 @@ export const site = {
   name: 'Guido Tapia Oré',
   shortName: 'Guido Tapia',
   email: 'guido.tapia.ore@gmail.com',
-  resume: '/resume.pdf',
   repo: 'https://github.com/GuidoTapia/personal-site',
 };
 

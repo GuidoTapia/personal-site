@@ -86,7 +86,7 @@ const alongside = rendered.filter(r => r.job.data.track !== 'engineering');
 
     <p class="experience__more">
       {t.experience.more[0]}
-      <a class="link" href="/resume.pdf" target="_blank" rel="noopener">
+      <a class="link" href={t.resumeUrl} target="_blank" rel="noopener">
         {t.experience.more[1]}
       </a>
       {t.experience.more[2]}
@@ -101,9 +101,96 @@ const alongside = rendered.filter(r => r.job.data.track !== 'engineering');
   }
 
   .jobs {
+    --rail: 196px; /* centered in the gap between the date column and the role */
+    position: relative;
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+
+  /* Timeline rail: a hairline with an amber fill that follows the scroll, and a dot per role */
+  .jobs::before,
+  .jobs::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    bottom: 0;
+    left: var(--rail);
+    width: 1px;
+    background: var(--line);
+  }
+
+  .jobs::after {
+    background: linear-gradient(var(--accent), color-mix(in oklab, var(--accent) 20%, transparent));
+    transform: scaleY(0);
+    transform-origin: 50% 0;
+  }
+
+  .job {
+    position: relative;
+  }
+
+  .job::before {
+    content: '';
+    position: absolute;
+    top: 42px;
+    left: calc(var(--rail) - 4px);
+    z-index: 1;
+    width: 9px;
+    height: 9px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--bg-sunken);
+  }
+
+  .job:first-child::before {
+    top: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .jobs::after {
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .jobs::after {
+        animation: rail linear both;
+        animation-timeline: --jobs;
+        animation-range: cover 20% cover 75%;
+      }
+
+      .jobs {
+        view-timeline: --jobs block;
+      }
+
+      .job::before {
+        animation: dot linear both;
+        animation-timeline: view();
+        animation-range: entry 100% cover 45%;
+      }
+
+      @keyframes rail {
+        to {
+          transform: scaleY(1);
+        }
+      }
+
+      @keyframes dot {
+        to {
+          border-color: var(--accent);
+          background: var(--accent);
+          box-shadow: 0 0 0 4px var(--accent-soft);
+        }
+      }
+    }
+  }
+
+  @supports not (animation-timeline: view()) {
+    .jobs::after {
+      transform: none;
+    }
   }
 
   .job {
@@ -230,9 +317,23 @@ const alongside = rendered.filter(r => r.job.data.track !== 'engineering');
   }
 
   @media (max-width: 760px) {
+    .jobs {
+      --rail: 0px;
+      padding-left: 24px;
+    }
+
     .job {
       grid-template-columns: 1fr;
       gap: 8px;
+    }
+
+    .job::before {
+      top: 40px;
+      left: -28px; /* the rail sits in the list's left padding */
+    }
+
+    .job:first-child::before {
+      top: 4px;
     }
   }
 </style>

@@ -52,7 +52,7 @@ const switcher = (Object.keys(languages) as Lang[]).map(l => ({
           </li>
         ))}
       </ul>
-      <a class="btn nav__resume" href={site.resume} target="_blank" rel="noopener">
+      <a class="btn nav__resume" href={t.resumeUrl} target="_blank" rel="noopener">
         {t.resume}
       </a>
 
@@ -68,7 +68,7 @@ const switcher = (Object.keys(languages) as Lang[]).map(l => ({
             </li>
           ))}
           <li>
-            <a href={site.resume} target="_blank" rel="noopener">
+            <a href={t.resumeUrl} target="_blank" rel="noopener">
               {t.resume}
             </a>
           </li>
@@ -116,6 +116,33 @@ const switcher = (Object.keys(languages) as Lang[]).map(l => ({
     height: var(--header-h);
     background: var(--bg);
     border-bottom: 1px solid var(--line);
+  }
+
+  /* Reading progress: an amber hairline on the header's bottom edge, driven by page scroll */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      .header::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        bottom: -1px;
+        left: 0;
+        height: 1px;
+        background: var(--accent);
+        transform-origin: 0 50%;
+        animation: progress linear both;
+        animation-timeline: scroll(root);
+      }
+
+      @keyframes progress {
+        from {
+          transform: scaleX(0);
+        }
+        to {
+          transform: scaleX(1);
+        }
+      }
+    }
   }
 
   .header__inner {

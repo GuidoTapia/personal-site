@@ -1,4 +1,4 @@
-/* Hero visual. --split (0..1) is the horizontal position of the Audit / Build divider. */
+/* Hero visual. --split (0..1) is the horizontal position of the Understand / Build divider. */
 .hv {
   --split: 0.55;
   position: relative;
@@ -134,15 +134,21 @@
   text-transform: uppercase;
   white-space: nowrap;
   pointer-events: none;
+  transition: opacity 0.25s var(--ease);
+}
+
+.hv[data-hide-left] .hv__label--audit,
+.hv[data-hide-right] .hv__label--build {
+  opacity: 0;
 }
 
 .hv__label--audit {
-  right: min(calc((1 - var(--split)) * 100% + 14px), calc(100% - 4.5rem));
+  right: calc((1 - var(--split)) * 100% + 14px);
   color: var(--accent);
 }
 
 .hv__label--build {
-  left: min(calc(var(--split) * 100% + 14px), calc(100% - 4.5rem));
+  left: calc(var(--split) * 100% + 14px);
   background: var(--accent);
   color: var(--accent-ink);
 }

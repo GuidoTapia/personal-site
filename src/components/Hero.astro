@@ -11,7 +11,7 @@ interface Props {
 }
 
 const t = ui[Astro.props.lang];
-const [a1, a2, a3] = t.hero.taglineAudit;
+const [a1, a2, a3] = t.hero.taglineUnderstand;
 const [b1, b2, b3] = t.hero.taglineBuild;
 
 const poster = await getImage({ src: portrait, width: 760, format: 'webp', quality: 78 });
@@ -21,38 +21,52 @@ const sample = await getImage({ src: portrait, width: 200, format: 'webp', quali
 <section class="hero" data-hero aria-labelledby="hero-title">
   <div class="container hero__grid">
     <div class="hero__copy">
-      <p class="hero__status">
+      <p class="hero__status enter" style="--i: 0">
         <span class="dot" aria-hidden="true"></span>
         {t.hero.availability} · {t.hero.location}
       </p>
-      <h1 id="hero-title">{site.name}</h1>
-      <p class="hero__role">{t.meta.role}</p>
-      <p class="hero__tagline">
+      <h1 id="hero-title" class="enter" style="--i: 1">
+        {site.name}
+      </h1>
+      <p class="hero__role enter" style="--i: 2">
+        {t.meta.role}
+      </p>
+      <p class="hero__tagline enter" style="--i: 3">
         {a1}
-        <em>{a2}</em>
+        <em class="draw" style="--i: 3">
+          {a2}
+        </em>
         {a3}
         <br />
         {b1}
-        <em>{b2}</em>
+        <em class="draw" style="--i: 5">
+          {b2}
+        </em>
         {b3}
       </p>
-      <p class="hero__lede">{t.hero.lede}</p>
-      <div class="hero__actions">
-        <a class="btn btn--primary" href="#work">
+      <p class="hero__lede enter" style="--i: 4">
+        {t.hero.lede}
+      </p>
+      <div class="hero__actions enter" style="--i: 5">
+        <a class="btn btn--primary magnetic" href="#work">
           {t.hero.cta}
         </a>
-        <a class="btn" href={site.resume} target="_blank" rel="noopener">
+        <a class="btn magnetic" href={t.resumeUrl} target="_blank" rel="noopener">
           {t.resumePdf}
         </a>
       </div>
     </div>
 
-    <div class="hero__visual">
+    <div class="hero__visual enter" style="--i: 2">
       <HeroVisual
         client:idle
         poster={poster.src}
         sample={sample.src}
-        labels={{ audit: t.hero.audit, build: t.hero.build, description: t.hero.visualLabel }}
+        labels={{
+          understand: t.hero.understand,
+          build: t.hero.build,
+          description: t.hero.visualLabel,
+        }}
       />
     </div>
   </div>

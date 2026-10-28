@@ -36,10 +36,10 @@ Node is pinned in `.nvmrc` (22.23.4; Astro 7 needs ≥22.23.4). Package manager 
   - `src/views/Home.astro` and `src/views/WorkEntry.astro` render both languages; `src/pages/` and `src/pages/es/` are thin wrappers. Section components take a `lang` prop.
   - The header EN/ES switch links to the same page in the other language. Base emits `hreflang` alternates and `og:locale`; the sitemap pairs the pages.
   - A new page or entry needs both languages. Spanish copy follows the MCD Spanish rules (first person implicit verbs, Peru-market anglicism list).
-  - `resume.pdf` is English only; the Spanish button says so.
-- `src/components/hero/`, the Audit / Build hero:
+  - Resumes: `public/Guido-Resume-En.pdf` and `public/Guido-Resume-Es.pdf`, linked per language via `resumeUrl` in `ui.ts`. `/resume.pdf` 301s to the English one.
+- `src/components/hero/`, the Understand / Build hero (the wireframe half is "understand", the solid half "build"; shader and CSS internals still call the left side "audit"):
   - `HeroVisual.tsx` (island, `client:idle`) renders the CSS poster: the same portrait as two layers split by `--split`. It drives `--split` from the pointer, or a slow idle sweep. It loads `HeroScene` lazily, only if the device passes `canRunScene()`: no reduced motion, no data saver, ≥4 cores, ≥4 GB memory, WebGL2.
-  - `HeroScene.tsx` samples `src/assets/me.jpeg` (200px webp) into points by luminance. One custom shader draws the left of the split as a gridded wireframe with a scanline (audit) and the right as amber relief dots (build). The camera is orthographic, so screen x maps linearly to world x. Rendering pauses when the hero is offscreen.
+  - `HeroScene.tsx` samples `src/assets/me.jpeg` (200px webp) into points by luminance. One custom shader draws the left of the split as a gridded wireframe with a scanline (understand) and the right as amber relief dots (build). The camera is orthographic, so screen x maps linearly to world x. Rendering pauses when the hero is offscreen.
   - The scene chunk is ~240 KB gzipped (three + R3F). Keep it lazy, and never import three outside `HeroScene.tsx`.
 - `src/styles/global.css` holds the design tokens (dark only, warm black + amber `#f5a524`, Geist + Geist Mono via Fontsource) and shared classes (`.container`, `.section`, `.eyebrow`, `.btn`, `.tags`, `.prose`, `.reveal`).
 - `.reveal` is a CSS-only scroll animation (`animation-timeline: view()`). It's progressive, and off under reduced motion.
@@ -65,4 +65,4 @@ Node is pinned in `.nvmrc` (22.23.4; Astro 7 needs ≥22.23.4). Package manager 
   - Hands-on: JS/TS, Node, React, React Native, Python, .NET. Review and audit depth only: Java, Swift, Kotlin, C++. The About section splits them deliberately.
   - Don't claim impact numbers that are still being measured (see the funnel case study).
 - Voice: first person, direct and specific, with a light personal touch ("making sure no one makes them crash right before the demo"). Keep the humor, but never trade accuracy for it.
-- `public/resume.pdf` and `public/og.png` are generated outside the build. The resume comes from the LaTeX CV; regenerate the OG card if the role or tagline changes.
+- The resume PDFs and `public/og.png` are generated outside the build. The resume comes from the LaTeX CV; regenerate the OG card if the role or tagline changes.

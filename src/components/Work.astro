@@ -26,7 +26,7 @@ const achievements = work.filter(w => w.data.kind === 'achievement');
     <ul class="cases">
       {caseStudies.map((item, i) => (
         <li class="case reveal">
-          <a class="case__link" href={localePath(lang, `/work/${slugOf(item.id)}/`)}>
+          <a class="case__link" href={localePath(lang, `/work/${slugOf(item.id)}/`)} data-spotlight>
             <span class="case__index">{String(i + 1).padStart(2, '0')}</span>
             <div class="case__body">
               <p class="case__meta">
@@ -47,7 +47,7 @@ const achievements = work.filter(w => w.data.kind === 'achievement');
     <ul class="extras">
       {achievements.map(item => (
         <li class="extra reveal">
-          <a href={localePath(lang, `/work/${slugOf(item.id)}/`)}>
+          <a href={localePath(lang, `/work/${slugOf(item.id)}/`)} data-tilt data-spotlight>
             {item.data.cover && (
               <Image
                 src={item.data.cover}
@@ -88,7 +88,24 @@ const achievements = work.filter(w => w.data.kind === 'achievement');
   }
 
   .case__link:hover {
-    background: var(--bg-raised);
+    background:
+      radial-gradient(
+        420px circle at var(--mx, 50%) var(--my, 50%),
+        color-mix(in oklab, var(--accent) 9%, transparent),
+        transparent 70%
+      ),
+      var(--bg-raised);
+  }
+
+  .case__body,
+  .case__index {
+    transition:
+      translate 0.35s var(--ease),
+      color 0.2s var(--ease);
+  }
+
+  .case__link:hover .case__body {
+    translate: 6px 0;
   }
 
   .case__index {
@@ -158,17 +175,40 @@ const achievements = work.filter(w => w.data.kind === 'achievement');
   }
 
   .extra a {
+    position: relative;
     display: block;
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
     height: 100%;
     border: 1px solid var(--line);
     border-radius: var(--radius);
     overflow: hidden;
     background: var(--bg-raised);
-    transition: border-color 0.25s var(--ease);
+    transition:
+      border-color 0.25s var(--ease),
+      transform 0.3s var(--ease);
   }
 
   .extra a:hover {
     border-color: var(--accent);
+  }
+
+  /* Cursor-following glint over the card */
+  .extra a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      360px circle at var(--mx, 50%) var(--my, 0%),
+      color-mix(in oklab, var(--accent) 10%, transparent),
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+    pointer-events: none;
+  }
+
+  .extra a:hover::after {
+    opacity: 1;
   }
 
   .extra__img {
@@ -176,11 +216,14 @@ const achievements = work.filter(w => w.data.kind === 'achievement');
     aspect-ratio: 16 / 9;
     object-fit: cover;
     filter: grayscale(0.6) contrast(1.05);
-    transition: filter 0.4s var(--ease);
+    transition:
+      filter 0.4s var(--ease),
+      scale 0.6s var(--ease);
   }
 
   .extra a:hover .extra__img {
     filter: none;
+    scale: 1.04;
   }
 
   .extra__body {

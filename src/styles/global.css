@@ -48,6 +48,13 @@ html {
   html {
     scroll-behavior: auto;
   }
+
+  /* Hover feedback still changes color, but nothing slides, scales, or eases */
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
 }
 
 body {
@@ -254,8 +261,47 @@ ul {
   text-underline-offset: 3px;
 }
 
-/* Scroll-driven reveal: CSS only, progressive, and off for reduced motion */
+/* Motion. Everything below is progressive and off for reduced motion: without it, content simply
+   sits in place. Pointer effects (spotlight, tilt, magnetic) are driven by src/scripts/motion.ts. */
 @media (prefers-reduced-motion: no-preference) {
+  /* Load-in stagger: set --i on each element for its order */
+  .enter {
+    animation: enter 0.9s var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 80ms);
+  }
+
+  @keyframes enter {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+      filter: blur(6px);
+    }
+  }
+
+  /* Amber underline that draws itself under highlighted words */
+  .draw {
+    background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0% 2px;
+    animation: draw 0.8s var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 700ms);
+  }
+
+  @keyframes draw {
+    to {
+      background-size: 100% 2px;
+    }
+  }
+
+  /* `translate` composes with the hover `transform` on .btn instead of replacing it */
+  .magnetic {
+    translate: var(--tx, 0) var(--ty, 0);
+    transition:
+      translate 0.35s var(--ease),
+      background-color 0.2s var(--ease),
+      border-color 0.2s var(--ease),
+      color 0.2s var(--ease),
+      transform 0.2s var(--ease);
+  }
+
   @supports (animation-timeline: view()) {
     .reveal {
       animation: reveal linear both;
@@ -267,6 +313,25 @@ ul {
       from {
         opacity: 0;
         transform: translateY(24px);
+      }
+    }
+
+    /* Section titles rise out of a mask as they scroll in */
+    .section-title,
+    .eyebrow {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 70%;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        clip-path: inset(0 0 100% 0);
+        transform: translateY(0.4em);
+      }
+      to {
+        clip-path: inset(0 0 -10% 0);
       }
     }
   }

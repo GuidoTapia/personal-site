@@ -16,7 +16,7 @@ const t = ui[Astro.props.lang];
     <h2 id="contact-title">{t.contact.title}</h2>
     <p class="contact__text">{t.contact.body}</p>
     <div class="contact__actions">
-      <a class="btn btn--primary" href={`mailto:${site.email}`}>
+      <a class="btn btn--primary magnetic" href={`mailto:${site.email}`}>
         {site.email}
       </a>
       {socials.map(s => (
@@ -30,17 +30,42 @@ const t = ui[Astro.props.lang];
 
 <style>
   .contact {
+    position: relative;
+    overflow: hidden;
     border-top: 1px solid var(--line);
-    background:
-      radial-gradient(
-        60% 80% at 50% 100%,
-        color-mix(in oklab, var(--accent) 10%, transparent),
-        transparent
-      ),
-      var(--bg);
+    background: var(--bg);
+  }
+
+  /* Amber glow from below that drifts slowly side to side */
+  .contact::before {
+    content: '';
+    position: absolute;
+    inset: 0 -20%;
+    background: radial-gradient(
+      50% 80% at 50% 100%,
+      color-mix(in oklab, var(--accent) 11%, transparent),
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .contact::before {
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift {
+      from {
+        translate: -12% 0;
+      }
+      to {
+        translate: 12% 0;
+      }
+    }
   }
 
   .contact__inner {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;

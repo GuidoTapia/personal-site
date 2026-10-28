@@ -7,7 +7,7 @@ const HeroScene = lazy(() => import('./HeroScene'));
 interface Props {
   poster: string; // portrait used by the CSS fallback
   sample: string; // small portrait the particle scene samples brightness from
-  labels: { audit: string; build: string; description: string };
+  labels: { understand: string; build: string; description: string };
 }
 
 const DEFAULT_SPLIT = 0.55;
@@ -36,7 +36,7 @@ const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(mi
 
 export default function HeroVisual({ poster, sample, labels }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
-  // Current split position (0 = all build, 1 = all audit), shared with the scene without re-renders.
+  // Current split position (0 = all build, 1 = all understand), shared with the scene without re-renders.
   const splitRef = useRef(DEFAULT_SPLIT);
   const [sceneEnabled, setSceneEnabled] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
@@ -52,8 +52,26 @@ export default function HeroVisual({ poster, sample, labels }: Props) {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    root.style.setProperty('--split', String(DEFAULT_SPLIT));
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Fade out the label of a side that is too narrow to hold it, so labels never clip or collide.
+    const [leftLabel, rightLabel] = root.querySelectorAll<HTMLElement>('.hv__label');
+    let sizes = { box: 0, left: 0, right: 0 };
+    const measure = () => {
+      sizes = { box: root.clientWidth, left: leftLabel.offsetWidth, right: rightLabel.offsetWidth };
+    };
+    const apply = (split: number) => {
+      root.style.setProperty('--split', split.toFixed(4));
+      root.toggleAttribute('data-hide-left', split * sizes.box < sizes.left + 24);
+      root.toggleAttribute('data-hide-right', (1 - split) * sizes.box < sizes.right + 24);
+    };
+    const resize = new ResizeObserver(() => {
+      measure();
+      apply(splitRef.current);
+    });
+    resize.observe(root);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return () => resize.disconnect();
+    }
 
     const area = root.closest<HTMLElement>('[data-hero]') ?? root;
     let target: number | null = null;
@@ -75,7 +93,7 @@ export default function HeroVisual({ poster, sample, labels }: Props) {
       const next = splitRef.current + (goal - splitRef.current) * (idle ? 0.03 : 0.09);
       if (Math.abs(next - splitRef.current) > 0.0003) {
         splitRef.current = next;
-        root.style.setProperty('--split', next.toFixed(4));
+        apply(next);
       }
       if (running) frame = requestAnimationFrame(tick);
     };
@@ -99,6 +117,7 @@ export default function HeroVisual({ poster, sample, labels }: Props) {
       running = false;
       cancelAnimationFrame(frame);
       observer.disconnect();
+      resize.disconnect();
       area.removeEventListener('pointermove', onMove);
       area.removeEventListener('pointerleave', onLeave);
     };
@@ -133,7 +152,7 @@ export default function HeroVisual({ poster, sample, labels }: Props) {
 
       <span className="hv__line" aria-hidden="true" />
       <span className="hv__label hv__label--audit" aria-hidden="true">
-        {labels.audit}
+        {labels.understand}
       </span>
       <span className="hv__label hv__label--build" aria-hidden="true">
         {labels.build}

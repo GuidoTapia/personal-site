@@ -4,10 +4,22 @@
   command = "yarn build"
   publish = "dist"
 
+# The resume moved to per-language files; keep old links working
+[[redirects]]
+  from = "/resume.pdf"
+  to = "/Guido-Resume-En.pdf"
+  status = 301
+
 # Routes from the old Gatsby template that may still be linked or indexed.
 [[redirects]]
   from = "/pensieve/*"
   to = "/"
+  status = 301
+
+# The resume moved to per-language files; keep old links working
+[[redirects]]
+  from = "/resume.pdf"
+  to = "/Guido-Resume-En.pdf"
   status = 301
 
 [[redirects]]
