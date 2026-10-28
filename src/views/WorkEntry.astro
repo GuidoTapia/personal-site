@@ -20,7 +20,7 @@ const { data } = entry;
 ---
 
 <Base title={data.title} description={data.summary} type="article">
-  <article class="container case">
+  <article class="container case" data-bp="WorkEntry.astro · static HTML">
     <a class="back" href={`${localePath(lang, '/')}#work`}>
       {t.case.back}
     </a>
@@ -57,7 +57,9 @@ const { data } = entry;
     )}
 
     <div class="case__layout">
-      <div class="prose">
+      <div
+        class="prose"
+        data-bp={`${entry.filePath?.replace(/^src\/content\//, '') ?? entry.id} · Markdown, rendered at build`}>
         <Content />
       </div>
 

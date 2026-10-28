@@ -1,0 +1,322 @@
+/* Understand lens (src/scripts/lens.ts). Everything is scoped to the overlay (.bp) and the rim
+   (.bp-rim), which only exist once the visitor turns the lens on. */
+.bp,
+.bp-rim {
+  display: none;
+}
+
+:root[data-lens] :is(.bp, .bp-rim) {
+  display: block;
+}
+
+:root[data-lens='away'] :is(.bp, .bp-rim) {
+  visibility: hidden;
+}
+
+:root[data-lens='on'] body {
+  cursor: crosshair;
+}
+
+.bp {
+  --bp-line: color-mix(in oklab, var(--accent) 62%, transparent);
+  --bp-soft: color-mix(in oklab, var(--accent) 24%, transparent);
+  --bp-ink: color-mix(in oklab, var(--text) 34%, var(--bp-bg));
+  --bp-grid-x: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--accent) 11%, transparent) 1px,
+    transparent 1px
+  );
+  --bp-grid-y: linear-gradient(
+    color-mix(in oklab, var(--accent) 11%, transparent) 1px,
+    transparent 1px
+  );
+  --bp-solid: linear-gradient(var(--bp-bg), var(--bp-bg));
+  --bp-hatch: repeating-linear-gradient(
+    -45deg,
+    color-mix(in oklab, var(--accent) 26%, transparent) 0 1px,
+    transparent 1px 6px
+  );
+  --bp-dots: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--accent) 38%, transparent) 1px,
+    transparent 1.5px
+  );
+  --bp-bg: #14110c;
+
+  position: absolute;
+  z-index: 40;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  background: var(--bp-bg);
+  clip-path: circle(0 at 0 0);
+}
+
+/* Freeze the copy: no motion, hover effects, or scroll reveals */
+.bp *,
+.bp *::before,
+.bp *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+.bp :is(.reveal, .enter, .section-title, .eyebrow, .magnetic, .case__cta, a) {
+  opacity: 1 !important;
+  transform: none !important;
+  translate: none !important;
+  scale: none !important;
+  clip-path: none !important;
+}
+
+/* Every box: the shared grid in its content box, hatching where it has padding */
+.bp__page,
+.bp__page * {
+  color: var(--bp-ink) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  border-color: var(--bp-soft) !important;
+  text-decoration-color: var(--bp-soft) !important;
+  background-color: var(--bp-bg) !important;
+  background-image: var(--bp-grid-x), var(--bp-grid-y), var(--bp-solid), var(--bp-hatch) !important;
+  background-size:
+    24px 24px,
+    24px 24px,
+    auto,
+    auto !important;
+  background-position: 0 0 !important;
+  background-repeat: repeat !important;
+  background-attachment: fixed, fixed, scroll, fixed !important;
+  background-clip: content-box, content-box, content-box, padding-box !important;
+  background-origin: padding-box !important;
+}
+
+/* Gaps between flex and grid children show as dots */
+.bp .bp-gap {
+  background-image: var(--bp-dots), var(--bp-hatch) !important;
+  background-size:
+    6px 6px,
+    auto !important;
+  background-attachment: fixed !important;
+  background-clip: content-box, padding-box !important;
+}
+
+.bp__page :is(div, p, li, ul, ol, dl, dd, dt, a, h1, h2, h3, h4, aside, header, nav) {
+  outline: 1px dashed var(--bp-soft);
+  outline-offset: -1px;
+}
+
+.bp__page,
+.bp__page :is(section, article, .container, [data-bp]) {
+  outline: 1px solid var(--bp-line) !important;
+  outline-offset: -1px;
+}
+
+.bp__page :is(h1, h2, h3) {
+  color: transparent !important;
+  -webkit-text-stroke: 1px color-mix(in oklab, var(--accent) 80%, transparent);
+}
+
+.bp__page :is(h4, em, .tags li, .eyebrow, .hero__role) {
+  color: color-mix(in oklab, var(--accent) 70%, var(--bg)) !important;
+}
+
+/* Images, videos, and islands become measured boxes */
+.bp .bp__box {
+  position: relative;
+  outline: 1px solid var(--bp-line) !important;
+  outline-offset: -1px;
+  background:
+    linear-gradient(
+      to top right,
+      transparent calc(50% - 0.5px),
+      var(--bp-soft) 50%,
+      transparent calc(50% + 0.5px)
+    ),
+    linear-gradient(
+      to bottom right,
+      transparent calc(50% - 0.5px),
+      var(--bp-soft) 50%,
+      transparent calc(50% + 0.5px)
+    ),
+    var(--bp-bg) !important;
+}
+
+.bp .bp__box::after {
+  content: attr(data-note);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  color: var(--accent);
+  font: 500 11px/1.6 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-align: center;
+  white-space: pre;
+}
+
+.bp .bp__box--island {
+  border-radius: var(--radius);
+  background:
+    radial-gradient(closest-side, transparent 70%, var(--bp-bg)),
+    var(--bp-dots) 0 0 / 10px 10px,
+    var(--bp-bg) !important;
+}
+
+.bp .bp__box--island::after {
+  place-content: end center;
+  padding-bottom: 18px;
+  color: color-mix(in oklab, var(--text) 70%, var(--bg));
+}
+
+.bp .bp__box--island::before {
+  content: attr(data-name);
+  position: absolute;
+  inset: 50% 12px auto;
+  translate: 0 -50%;
+  padding: 10px 12px;
+  border: 1px solid var(--bp-line);
+  border-radius: 6px;
+  background: var(--bp-bg);
+  color: var(--accent);
+  font: 600 12px/1.4 var(--font-mono);
+  text-align: center;
+}
+
+/* Component labels */
+.bp__tags {
+  position: absolute;
+  inset: 0;
+}
+
+.bp__tag {
+  position: absolute;
+  margin: 6px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 600 10.5px/1.5 var(--font-mono);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.bp__tag small {
+  margin-left: 8px;
+  font-size: inherit;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.bp__tag--layout {
+  translate: calc(-100% - 12px) 0;
+  border: 1px solid var(--bp-line);
+  background: var(--bp-bg);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* The lens itself */
+.bp-rim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: calc(var(--lens-r) * 2);
+  height: calc(var(--lens-r) * 2);
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 4px color-mix(in oklab, var(--bg) 70%, transparent),
+    0 0 0 5px color-mix(in oklab, var(--accent) 30%, transparent),
+    0 0 40px color-mix(in oklab, var(--accent) 22%, transparent),
+    inset 0 0 30px color-mix(in oklab, var(--accent) 14%, transparent);
+  /* Crosshair at the center */
+  background:
+    linear-gradient(var(--accent), var(--accent)) center / 14px 1px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) center / 1px 14px no-repeat;
+  will-change: transform;
+}
+
+.bp-rim__scan {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.bp-rim__scan::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 40px;
+  border-bottom: 1px solid color-mix(in oklab, var(--accent) 80%, transparent);
+  background: linear-gradient(transparent, color-mix(in oklab, var(--accent) 12%, transparent));
+  translate: 0 -40px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bp-rim__scan::after {
+    animation-name: bp-scan;
+    animation-duration: 2.8s;
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+    animation-iteration-count: infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp-rim__scan {
+    display: none;
+  }
+}
+
+@keyframes bp-scan {
+  to {
+    translate: 0 calc(var(--lens-r) * 2);
+  }
+}
+
+.bp-rim__name {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  max-width: calc(var(--lens-r) * 2.4);
+  overflow: hidden;
+  translate: -50% -50%;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 600 10px/1.4 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.bp-rim__hint {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 50%;
+  padding: 3px 10px;
+  border: 1px solid var(--bp-line, var(--accent));
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--accent);
+  font: 500 10px/1.4 var(--font-mono);
+  white-space: nowrap;
+}
+
+/* Touch: the lens is dragged with a finger; outside it the page scrolls as usual */
+:root[data-lens-touch] .bp-rim {
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+}
+
+:root[data-lens-touch] .bp-rim__hint {
+  display: block;
+}

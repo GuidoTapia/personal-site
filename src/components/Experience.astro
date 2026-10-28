@@ -19,16 +19,22 @@ const engineering = rendered.filter(r => r.job.data.track === 'engineering');
 const alongside = rendered.filter(r => r.job.data.track !== 'engineering');
 ---
 
-<section id="experience" class="section experience" aria-labelledby="experience-title">
+<section
+  id="experience"
+  class="section experience"
+  data-bp="Experience.astro · static HTML"
+  aria-labelledby="experience-title">
   <div class="container">
     <p class="eyebrow">{t.experience.eyebrow}</p>
     <h2 id="experience-title" class="section-title">
       {t.experience.title}
     </h2>
 
-    <ol class="jobs">
+    <ol class="jobs" data-bp="timeline · CSS scroll-driven rail">
       {engineering.map(({ job, Content }) => (
-        <li class="job reveal">
+        <li
+          class="job reveal"
+          data-bp={`${job.filePath?.replace(/^src\/content\//, '') ?? job.id} · Markdown`}>
           <p class="job__range">{job.data.range}</p>
           <div>
             <h3>

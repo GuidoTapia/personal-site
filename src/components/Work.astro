@@ -14,9 +14,12 @@ const t = ui[lang];
 const work = await getWork(lang);
 const caseStudies = work.filter(w => w.data.kind === 'case-study');
 const achievements = work.filter(w => w.data.kind === 'achievement');
+// Source file shown by the Understand lens
+const source = (item: (typeof work)[number]) =>
+  item.filePath?.replace(/^src\/content\//, '') ?? item.id;
 ---
 
-<section id="work" class="section" aria-labelledby="work-title">
+<section id="work" class="section" data-bp="Work.astro · static HTML" aria-labelledby="work-title">
   <div class="container">
     <p class="eyebrow">{t.work.eyebrow}</p>
     <h2 id="work-title" class="section-title">
@@ -26,7 +29,11 @@ const achievements = work.filter(w => w.data.kind === 'achievement');
     <ul class="cases">
       {caseStudies.map((item, i) => (
         <li class="case reveal">
-          <a class="case__link" href={localePath(lang, `/work/${slugOf(item.id)}/`)} data-spotlight>
+          <a
+            class="case__link"
+            href={localePath(lang, `/work/${slugOf(item.id)}/`)}
+            data-spotlight
+            data-bp={`${source(item)} · Markdown`}>
             <span class="case__index">{String(i + 1).padStart(2, '0')}</span>
             <div class="case__body">
               <p class="case__meta">
@@ -47,7 +54,11 @@ const achievements = work.filter(w => w.data.kind === 'achievement');
     <ul class="extras">
       {achievements.map(item => (
         <li class="extra reveal">
-          <a href={localePath(lang, `/work/${slugOf(item.id)}/`)} data-tilt data-spotlight>
+          <a
+            href={localePath(lang, `/work/${slugOf(item.id)}/`)}
+            data-tilt
+            data-spotlight
+            data-bp={`${source(item)} · Markdown + astro:assets`}>
             {item.data.cover && (
               <Image
                 src={item.data.cover}

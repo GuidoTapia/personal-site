@@ -22,6 +22,11 @@ const en = {
   resume: 'Resume',
   resumePdf: 'Resume (PDF)',
   resumeUrl: '/Guido-Resume-En.pdf',
+  lens: {
+    label: 'Understand',
+    hint: 'Understand lens: see how this page is built. Press U',
+    drag: 'Drag to explore',
+  },
   hero: {
     availability: 'Open to new opportunities',
     location: 'Arequipa, Peru',
@@ -107,6 +112,11 @@ const es = {
   resume: 'CV',
   resumePdf: 'CV (PDF)',
   resumeUrl: '/Guido-Resume-Es.pdf',
+  lens: {
+    label: 'Entender',
+    hint: 'Lente Entender: mira cómo está construida esta página. Presiona U',
+    drag: 'Arrastra para explorar',
+  },
   hero: {
     availability: 'Abierto a nuevas oportunidades',
     location: 'Arequipa, Perú',
