@@ -1,0 +1,247 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+const work = (await getCollection('work', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const caseStudies = work.filter(w => w.data.kind === 'case-study');
+const achievements = work.filter(w => w.data.kind === 'achievement');
+---
+
+<section id="work" class="section" aria-labelledby="work-title">
+  <div class="container">
+    <p class="eyebrow">01 · Work</p>
+    <h2 id="work-title" class="section-title">
+      Selected work, with the numbers behind it.
+    </h2>
+
+    <ul class="cases">
+      {caseStudies.map((item, i) => (
+        <li class="case reveal">
+          <a class="case__link" href={`/work/${item.id}/`}>
+            <span class="case__index">{String(i + 1).padStart(2, '0')}</span>
+            <div class="case__body">
+              <p class="case__meta">
+                {item.data.role} · {item.data.period}
+              </p>
+              <h3>{item.data.title}</h3>
+              <p class="case__summary">{item.data.summary}</p>
+              {item.data.metrics.length > 0 && (
+                <dl class="case__metrics">
+                  {item.data.metrics.slice(0, 3).map(m => (
+                    <div>
+                      <dt>{m.label}</dt>
+                      <dd>{m.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+            </div>
+            <span class="case__cta" aria-hidden="true">
+              Read →
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <h3 class="sub">Beyond the day job</h3>
+    <ul class="extras">
+      {achievements.map(item => (
+        <li class="extra reveal">
+          <a href={`/work/${item.id}/`}>
+            {item.data.cover && (
+              <Image
+                src={item.data.cover}
+                alt={item.data.coverAlt ?? ''}
+                width={640}
+                quality={75}
+                class="extra__img"
+              />
+            )}
+            <div class="extra__body">
+              <p class="case__meta">{item.data.period}</p>
+              <h4>{item.data.title}</h4>
+              <p>{item.data.summary}</p>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cases {
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .case {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .case__link {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    gap: 24px;
+    padding: 32px 8px;
+    transition: background-color 0.25s var(--ease);
+  }
+
+  .case__link:hover {
+    background: var(--bg-raised);
+  }
+
+  .case__index {
+    padding-top: 4px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: var(--fz-sm);
+  }
+
+  .case__link:hover .case__index,
+  .case__link:hover h3 {
+    color: var(--accent);
+  }
+
+  .case__meta {
+    margin: 0 0 8px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+
+  h3 {
+    font-size: var(--fz-lg);
+    transition: color 0.2s var(--ease);
+  }
+
+  .case__summary {
+    max-width: 62ch;
+    margin: 10px 0 0;
+  }
+
+  .case__metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    margin: 20px 0 0;
+  }
+
+  .case__metrics div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .case__metrics dd {
+    order: -1;
+  }
+
+  .case__metrics dd {
+    margin: 0;
+    color: var(--text);
+    font-size: var(--fz-lg);
+    font-weight: 650;
+  }
+
+  .case__metrics dt {
+    font-size: 0.75rem;
+    max-width: 22ch;
+  }
+
+  .case__cta {
+    align-self: center;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition:
+      opacity 0.25s var(--ease),
+      transform 0.25s var(--ease);
+  }
+
+  .case__link:hover .case__cta,
+  .case__link:focus-visible .case__cta {
+    opacity: 1;
+    transform: none;
+  }
+
+  .sub {
+    margin: clamp(56px, 8vw, 88px) 0 24px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .extras {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    list-style: none;
+  }
+
+  .extra a {
+    display: block;
+    height: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-raised);
+    transition: border-color 0.25s var(--ease);
+  }
+
+  .extra a:hover {
+    border-color: var(--accent);
+  }
+
+  .extra__img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    filter: grayscale(0.6) contrast(1.05);
+    transition: filter 0.4s var(--ease);
+  }
+
+  .extra a:hover .extra__img {
+    filter: none;
+  }
+
+  .extra__body {
+    padding: 22px 24px 24px;
+  }
+
+  h4 {
+    font-size: var(--fz-md);
+    margin-bottom: 8px;
+  }
+
+  .extra__body p:last-child {
+    margin: 0;
+    font-size: var(--fz-sm);
+  }
+
+  @media (max-width: 760px) {
+    .case__link {
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 28px 0;
+    }
+
+    .case__cta {
+      opacity: 1;
+      transform: none;
+    }
+
+    .extras {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

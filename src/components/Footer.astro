@@ -1,0 +1,40 @@
+---
+import { site } from '@/data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <p>
+      © {year} {site.name}
+    </p>
+    <p>
+      Designed and built with Astro and React Three Fiber.
+      <a class="link" href={site.repo} target="_blank" rel="noopener">
+        View source
+      </a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    padding-block: 28px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  p {
+    margin: 0;
+  }
+</style>

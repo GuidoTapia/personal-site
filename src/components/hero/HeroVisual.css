@@ -1,0 +1,148 @@
+/* Hero visual. --split (0..1) is the horizontal position of the Audit / Build divider. */
+.hv {
+  --split: 0.55;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  isolation: isolate;
+  user-select: none;
+}
+
+.hv__poster,
+.hv canvas {
+  position: absolute !important;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hv__poster {
+  transition: opacity 0.9s var(--ease);
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 55%, transparent 74%);
+  mask-image: radial-gradient(circle at 50% 45%, #000 55%, transparent 74%);
+}
+
+.hv canvas {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease);
+}
+
+.hv.is-live .hv__poster {
+  opacity: 0;
+}
+
+.hv.is-live canvas {
+  opacity: 1;
+}
+
+.hv__poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Build side: amber duotone */
+.hv__build {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+}
+
+.hv__build img {
+  filter: grayscale(1) contrast(1.15);
+  mix-blend-mode: multiply;
+}
+
+/* Audit side: desaturated, gridded, with a scanline; clipped to the left of the split */
+.hv__audit {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  clip-path: inset(0 calc((1 - var(--split)) * 100%) 0 0);
+  background: var(--bg);
+}
+
+.hv__audit img {
+  filter: grayscale(1) contrast(1.25) brightness(0.8);
+  opacity: 0.85;
+}
+
+.hv__audit::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--bg) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg) 1px, transparent 1px);
+  background-size: 9px 9px;
+}
+
+.hv__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  height: 18%;
+  background: linear-gradient(
+    transparent,
+    color-mix(in oklab, var(--accent) 35%, transparent),
+    transparent
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hv__scan {
+    opacity: 1;
+    animation: hv-scan 5s linear infinite;
+  }
+}
+
+@keyframes hv-scan {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(560%);
+  }
+}
+
+/* Divider and labels follow --split */
+.hv__line {
+  position: absolute;
+  top: 6%;
+  bottom: 6%;
+  left: calc(var(--split) * 100%);
+  z-index: 2;
+  width: 1px;
+  background: linear-gradient(transparent, var(--accent) 15%, var(--accent) 85%, transparent);
+  box-shadow: 0 0 14px color-mix(in oklab, var(--accent) 70%, transparent);
+  pointer-events: none;
+}
+
+.hv__label {
+  position: absolute;
+  top: 4%;
+  z-index: 2;
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.hv__label--audit {
+  right: min(calc((1 - var(--split)) * 100% + 14px), calc(100% - 4.5rem));
+  color: var(--accent);
+}
+
+.hv__label--build {
+  left: min(calc(var(--split) * 100% + 14px), calc(100% - 4.5rem));
+  background: var(--accent);
+  color: var(--accent-ink);
+}

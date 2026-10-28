@@ -1,0 +1,205 @@
+---
+import { getImage } from 'astro:assets';
+import portrait from '@/assets/me.jpeg';
+import HeroVisual from '@/components/hero/HeroVisual';
+import { highlights, site } from '@/data/site';
+
+const poster = await getImage({ src: portrait, width: 760, format: 'webp', quality: 78 });
+const sample = await getImage({ src: portrait, width: 200, format: 'webp', quality: 90 });
+---
+
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      <p class="hero__status">
+        <span class="dot" aria-hidden="true"></span>
+        {site.availability} · {site.location}
+      </p>
+      <h1 id="hero-title">{site.name}</h1>
+      <p class="hero__role">{site.role}</p>
+      <p class="hero__tagline">
+        I <em>audit</em> the code.
+        <br />
+        Then I help <em>build</em> what comes next.
+      </p>
+      <p class="hero__lede">
+        At{' '}
+        <a class="link" href="https://designli.co/">
+          Designli
+        </a>{' '}
+        I read prospective clients’ codebases and write the proposals that turn them into projects.
+        Before that, I spent over four years shipping React, Node.js, and React Native products for
+        clients in the US and Europe.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#work">
+          See the work
+        </a>
+        <a class="btn" href={site.resume} target="_blank" rel="noopener">
+          Resume (PDF)
+        </a>
+      </div>
+    </div>
+
+    <div class="hero__visual">
+      <HeroVisual client:idle poster={poster.src} sample={sample.src} />
+    </div>
+  </div>
+
+  <div class="container">
+    <ul class="highlights" aria-label="Highlights">
+      {highlights.map(h => (
+        <li>
+          <strong>{h.value}</strong>
+          <span>{h.label}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: clamp(32px, 6vw, 72px);
+    padding-bottom: clamp(48px, 7vw, 88px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(24px, 5vw, 72px);
+  }
+
+  .hero__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 6px 14px 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 60%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .dot {
+      animation: pulse 2.4s var(--ease) infinite;
+    }
+  }
+
+  @keyframes pulse {
+    70% {
+      box-shadow: 0 0 0 8px transparent;
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+
+  h1 {
+    font-size: var(--fz-2xl);
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .hero__role {
+    margin: 18px 0 0;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--fz-sm);
+  }
+
+  .hero__tagline {
+    margin: 28px 0 0;
+    color: var(--text);
+    font-size: var(--fz-xl);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .hero__tagline {
+    text-wrap: balance;
+  }
+
+  .hero__tagline em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero__lede {
+    max-width: 52ch;
+    margin: 20px 0 0;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .hero__visual {
+    max-width: 560px;
+    width: 100%;
+    justify-self: center;
+  }
+
+  .highlights {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: clamp(40px, 6vw, 72px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--line);
+    overflow: hidden;
+    list-style: none;
+  }
+
+  .highlights li {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px 22px;
+    background: var(--bg);
+  }
+
+  .highlights strong {
+    color: var(--text);
+    font-size: var(--fz-lg);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .highlights span {
+    font-size: var(--fz-xs);
+    line-height: 1.45;
+  }
+
+  @media (max-width: 900px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero__visual {
+      max-width: 420px;
+    }
+
+    .highlights {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

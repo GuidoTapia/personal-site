@@ -1,0 +1,236 @@
+---
+import { Image } from 'astro:assets';
+import memoji from '@/assets/memoji.png';
+import { nav, site } from '@/data/site';
+---
+
+<header class="header">
+  <div class="container header__inner">
+    <a class="brand" href="/" aria-label={`${site.name}, home`}>
+      <span class="brand__avatar" data-memoji>
+        <Image src={memoji} alt="" width={72} height={72} loading="eager" />
+        <!-- Animated memoji, fetched only on hover: HEVC with alpha for Safari, VP9 with alpha elsewhere -->
+        <video muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+      </span>
+      <span class="brand__name">{site.shortName}</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      <ul class="nav__links">
+        {nav.map(item => (
+          <li>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+      <a class="btn nav__resume" href={site.resume} target="_blank" rel="noopener">
+        Resume
+      </a>
+
+      <details class="menu">
+        <summary aria-label="Open menu">
+          <span></span>
+          <span></span>
+        </summary>
+        <ul class="menu__panel">
+          {nav.map(item => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))}
+          <li>
+            <a href={site.resume} target="_blank" rel="noopener">
+              Resume
+            </a>
+          </li>
+        </ul>
+      </details>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Close the mobile menu after choosing a section.
+  const menu = document.querySelector<HTMLDetailsElement>('.menu');
+  menu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => (menu.open = false)));
+
+  // Play the animated memoji on hover/focus only, so the video never loads up front.
+  const avatar = document.querySelector<HTMLElement>('[data-memoji]');
+  const video = avatar?.querySelector('video');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (avatar && video && !reduced) {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const start = () => {
+      if (!video.src) video.src = isSafari ? '/memoji-guido.MOV' : '/memoji-guido.webm';
+      video
+        .play()
+        .then(() => avatar.classList.add('is-playing'))
+        .catch(() => {});
+    };
+    const stop = () => {
+      video.pause();
+      avatar.classList.remove('is-playing');
+    };
+    const link = avatar.closest('a');
+    link?.addEventListener('pointerenter', start);
+    link?.addEventListener('pointerleave', stop);
+    link?.addEventListener('focus', start);
+    link?.addEventListener('blur', stop);
+  }
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--header-h);
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .brand__avatar {
+    position: relative;
+    display: block;
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand__avatar img,
+  .brand__avatar video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .brand__avatar video {
+    opacity: 0;
+  }
+
+  .brand__avatar:global(.is-playing) video {
+    opacity: 1;
+  }
+
+  .brand__avatar:global(.is-playing) img {
+    opacity: 0;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .nav__links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav__links a {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    transition: color 0.2s var(--ease);
+  }
+
+  .nav__links a:hover {
+    color: var(--accent);
+  }
+
+  .nav__resume {
+    min-height: 36px;
+    padding: 0 16px;
+  }
+
+  .menu {
+    display: none;
+    position: relative;
+  }
+
+  .menu summary {
+    display: grid;
+    place-content: center;
+    gap: 6px;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu summary span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--text);
+    transition: transform 0.2s var(--ease);
+  }
+
+  .menu[open] summary span:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+
+  .menu[open] summary span:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  .menu__panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 200px;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    list-style: none;
+  }
+
+  .menu__panel a {
+    display: block;
+    padding: 12px 14px;
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: var(--fz-sm);
+  }
+
+  .menu__panel a:hover {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  @media (max-width: 760px) {
+    .nav__links,
+    .nav__resume {
+      display: none;
+    }
+
+    .menu {
+      display: block;
+    }
+  }
+</style>

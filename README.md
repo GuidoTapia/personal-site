@@ -2,25 +2,27 @@
 
 Portfolio of Guido Tapia Oré, Solutions Technical Advisor and Technical Lead. Live at **https://guidore.netlify.app**.
 
-Built with Gatsby 5, React 18, TypeScript, and styled-components, deployed on Netlify.
+Static site built with Astro, React islands, and React Three Fiber, deployed on Netlify. The hero renders the portrait as a particle field split into an **audit** side (wireframe scan) and a **build** side (solid relief). The 3D loads only on capable devices, and everyone else gets a CSS version of the same idea. All content is in the HTML, so the page works without JavaScript.
 
 ## Run it locally
 
 ```bash
-nvm use        # Node 22, from .nvmrc
+nvm use         # Node 22.23.4, from .nvmrc
 yarn
-yarn develop   # http://localhost:8000
+yarn dev        # http://localhost:4321
 ```
 
 ## Editing content
 
-- Experience: `content/jobs/<Company>/index.md`
-- Featured work and achievements: `content/featured/<Name>/index.md` (with a cover image in the same folder)
-- Hero, about, and contact copy: `src/components/sections/`
-- Email, social links, and nav: `src/config.ts`
+| What                                    | Where                                                            |
+| --------------------------------------- | ---------------------------------------------------------------- |
+| Experience                              | `src/content/jobs/<company>.md`                                  |
+| Case studies and achievements           | `src/content/work/<slug>/index.md` (+ images in the same folder) |
+| Name, role, links, hero numbers, skills | `src/data/site.ts`                                               |
+| Section copy                            | `src/components/*.astro`                                         |
 
-Run `yarn validate` (type-check + lint) before pushing. A push to `main` deploys to production.
+Run `yarn validate` (types + lint) before pushing. A push to `main` deploys to production.
 
-## Credits
+## License
 
-The design is adapted from [Brittany Chiang's v4](https://github.com/bchiang7/v4) (MIT).
+Code is MIT. Text, photos, and the resume are © Guido Tapia Oré.

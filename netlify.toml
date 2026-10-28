@@ -2,7 +2,18 @@
 # Node version comes from .nvmrc.
 [build]
   command = "yarn build"
-  publish = "public"
+  publish = "dist"
+
+# Routes from the old Gatsby template that may still be linked or indexed.
+[[redirects]]
+  from = "/pensieve/*"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/archive"
+  to = "/#work"
+  status = 301
 
 [[headers]]
   for = "/*"
@@ -10,8 +21,15 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
 [[headers]]
-  for = "/static/*"
+  for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Never cache the service-worker kill switch, so old Gatsby workers pick it up.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"

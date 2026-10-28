@@ -1,0 +1,107 @@
+---
+import { skills } from '@/data/site';
+---
+
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="container about">
+    <div>
+      <p class="eyebrow">03 · About</p>
+      <h2 id="about-title" class="section-title">
+        The short version.
+      </h2>
+      <div class="about__text">
+        <p>
+          Hey there, I’m Guido. I build full-stack web and mobile apps, but my real specialty is
+          making sure no one makes them crash right before the demo. These days that instinct is my
+          job: I read other teams’ codebases, find what will break, and explain it in terms a
+          founder can act on.
+        </p>
+        <p>
+          I started in hardware. I built school automation and smart waste-monitoring devices in
+          Arequipa, and led the team that won the RoboCup Junior Soccer world championship in 2017.
+          Then I spent over four years at RAVN, where I grew from trainee to software engineer, led
+          teams of 2 to 10 developers, and cut onboarding for new hires from three months to one.
+        </p>
+        <p>
+          I work in Spanish and English, with intermediate-advanced French, remotely with teams in
+          the US and Europe. When I’m not doing any of that, I’m occasionally using my free time to
+          compose the next summer hit.
+        </p>
+      </div>
+    </div>
+
+    <aside class="skills" aria-label="Skills">
+      <div>
+        <h3>I ship with</h3>
+        <ul class="tags">
+          {skills.ship.map(s => (
+            <li>{s}</li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3>I review and audit</h3>
+        <ul class="tags tags--quiet">
+          {skills.review.map(s => (
+            <li>{s}</li>
+          ))}
+        </ul>
+        <p class="skills__note">
+          Languages I read and reason about in client audits, alongside everything in the list
+          above.
+        </p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 80px);
+  }
+
+  .about__text {
+    max-width: 62ch;
+  }
+
+  .skills {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-self: end;
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+  }
+
+  h3 {
+    margin-bottom: 14px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .tags--quiet li {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--muted);
+  }
+
+  .skills__note {
+    margin: 14px 0 0;
+    font-size: var(--fz-xs);
+    color: var(--faint);
+  }
+
+  @media (max-width: 900px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
