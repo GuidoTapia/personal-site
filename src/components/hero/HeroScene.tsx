@@ -1,65 +1,27 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import * as THREE from 'three';
+import type { Grab } from './grab';
+import { samplePortrait, type Portrait } from './portrait';
 
 interface Props {
   sample: string;
   splitRef: RefObject<number>;
+  grabRef: RefObject<Grab>;
   active: boolean;
   onReady: () => void;
-}
-
-interface Portrait {
-  step: number; // pixel sampling step; dots grow with it so coverage stays the same
-  positions: Float32Array;
-  lum: Float32Array;
-  rand: Float32Array;
 }
 
 // Portrait spans [-1, 1] on both axes; this leaves a margin around it.
 const VIEW_HEIGHT = 2.15;
 const AUDIT_CELL = 0.022;
-
-// Turn the photo into points: one per bright-enough pixel, with depth from brightness.
-// The photo has a near-black background, so a luminance threshold isolates the subject.
-async function samplePortrait(url: string, step: number): Promise<Portrait> {
-  const img = new Image();
-  img.src = url;
-  await img.decode();
-  const { naturalWidth: w, naturalHeight: h } = img;
-  const canvas = document.createElement('canvas');
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  if (!ctx) throw new Error('2D canvas unavailable');
-  ctx.drawImage(img, 0, 0);
-  const { data } = ctx.getImageData(0, 0, w, h);
-
-  const positions: number[] = [];
-  const lum: number[] = [];
-  const rand: number[] = [];
-  for (let y = 0; y < h; y += step) {
-    for (let x = 0; x < w; x += step) {
-      const i = (y * w + x) * 4;
-      const l = (0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]) / 255;
-      if (l < 0.09) continue;
-      const r = Math.random();
-      positions.push(
-        (x / w - 0.5) * 2 + (r - 0.5) * 0.008,
-        -(y / h - 0.5) * 2 + (Math.random() - 0.5) * 0.008,
-        (l - 0.35) * 0.5,
-      );
-      lum.push(l);
-      rand.push(r);
-    }
-  }
-  return {
-    step,
-    positions: new Float32Array(positions),
-    lum: new Float32Array(lum),
-    rand: new Float32Array(rand),
-  };
-}
+// Stretch: how far the grabbed region can be pulled (world units), its radius, and the springs.
+const MAX_PULL = 0.75;
+const GRAB_RADIUS = 0.32;
+const PULL_STIFFNESS = 140;
+const PULL_DAMPING = 9; // well under critical (2 * sqrt(140) ≈ 24), so the face wobbles as it settles
+const POKE_STIFFNESS = 90;
+const POKE_DAMPING = 7;
 
 const vertexShader = /* glsl */ `
   uniform float uTime;
@@ -69,6 +31,9 @@ const vertexShader = /* glsl */ `
   uniform float uScanY;
   uniform float uCell;
   uniform float uKeep;
+  uniform vec2 uGrab;
+  uniform vec2 uPull;
+  uniform vec3 uPoke; // xy = center, z = strength
   attribute float aLum;
   attribute float aRand;
   varying float vLum;
@@ -88,6 +53,17 @@ const vertexShader = /* glsl */ `
     build.z += sin(uTime * 0.9 + aRand * 6.2831) * 0.015;
 
     vec3 pos = mix(audit, build, side);
+
+    // Stretch: points near the grab point follow the pull with a soft falloff and a little
+    // per-point lag, and bulge toward the camera. A poke pushes points out from the tap.
+    vec2 fromGrab = position.xy - uGrab;
+    float pull = exp(-dot(fromGrab, fromGrab) / (${GRAB_RADIUS} * ${GRAB_RADIUS}));
+    pos.xy += uPull * pull * (0.85 + aRand * 0.3);
+    pos.z += length(uPull) * pull * 0.35;
+    vec2 fromPoke = position.xy - uPoke.xy;
+    float poke = exp(-dot(fromPoke, fromPoke) / 0.06);
+    pos.xy += normalize(fromPoke + 1e-4) * uPoke.z * poke * (0.8 + aRand * 0.4);
+    pos.z += uPoke.z * poke * 0.5;
     vec4 mv = modelViewMatrix * vec4(pos, 1.0);
     gl_Position = projectionMatrix * mv;
 
@@ -137,11 +113,14 @@ const fragmentShader = /* glsl */ `
 function Points({
   portrait,
   splitRef,
+  grabRef,
   onReady,
 }: { portrait: Portrait } & Omit<Props, 'sample' | 'active'>) {
   const group = useRef<THREE.Group>(null);
   const material = useRef<THREE.ShaderMaterial>(null);
   const readyCalled = useRef(false);
+  // Spring state for the stretch and the poke, advanced every frame.
+  const springs = useRef({ px: 0, py: 0, vx: 0, vy: 0, poke: 0, pokeV: 0, lastPoke: 0 });
   const size = useThree(state => state.size);
 
   const geometry = useMemo(() => {
@@ -164,6 +143,9 @@ function Points({
       uCell: { value: AUDIT_CELL },
       // Fraction of points kept on the audit side; higher when sampling fewer points (mobile).
       uKeep: { value: portrait.lum.length > 12000 ? 0.3 : 0.75 },
+      uGrab: { value: new THREE.Vector2() },
+      uPull: { value: new THREE.Vector2() },
+      uPoke: { value: new THREE.Vector3() },
       uAccent: { value: new THREE.Color(0.961, 0.647, 0.141) },
       uInk: { value: new THREE.Color(0.925, 0.91, 0.882) },
     }),
@@ -195,6 +177,48 @@ function Points({
     // Scanline sweeps top to bottom over the audit side.
     m.uniforms.uScanY.value = 1.25 - ((t * 0.32) % 2.6);
 
+    // Stretch springs. While held, the pull follows the cursor (capped); once released it
+    // springs back to rest. Pixels convert to world units through the camera zoom.
+    const grab = grabRef.current;
+    const sp = springs.current;
+    const dt = Math.min(delta, 1 / 30);
+    if (grab?.down) {
+      let tx = (grab.x - grab.startX) / zoom;
+      let ty = -(grab.y - grab.startY) / zoom;
+      const len = Math.hypot(tx, ty);
+      if (len > MAX_PULL) {
+        // Soft cap: keeps stretching a little past the limit instead of stopping dead.
+        const capped = MAX_PULL + (len - MAX_PULL) * 0.15;
+        tx *= capped / len;
+        ty *= capped / len;
+      }
+      // Track velocity too, so letting go mid-drag flings the face instead of stopping it.
+      const follow = Math.min(1, dt * 18);
+      const nx = sp.px + (tx - sp.px) * follow;
+      const ny = sp.py + (ty - sp.py) * follow;
+      sp.vx = (nx - sp.px) / Math.max(dt, 1e-3);
+      sp.vy = (ny - sp.py) / Math.max(dt, 1e-3);
+      sp.px = nx;
+      sp.py = ny;
+      m.uniforms.uGrab.value.set(grab.startX / zoom, -grab.startY / zoom);
+    } else {
+      sp.vx += (-PULL_STIFFNESS * sp.px - PULL_DAMPING * sp.vx) * dt;
+      sp.vy += (-PULL_STIFFNESS * sp.py - PULL_DAMPING * sp.vy) * dt;
+      sp.px += sp.vx * dt;
+      sp.py += sp.vy * dt;
+    }
+    m.uniforms.uPull.value.set(sp.px, sp.py);
+
+    if (grab && grab.poke !== sp.lastPoke) {
+      sp.lastPoke = grab.poke;
+      sp.pokeV += 2.2;
+      m.uniforms.uPoke.value.x = grab.pokeX / zoom;
+      m.uniforms.uPoke.value.y = -grab.pokeY / zoom;
+    }
+    sp.pokeV += (-POKE_STIFFNESS * sp.poke - POKE_DAMPING * sp.pokeV) * dt;
+    sp.poke += sp.pokeV * dt;
+    m.uniforms.uPoke.value.z = sp.poke;
+
     // Moving the divider also turns the head slightly, which reveals the depth relief.
     const targetY = (split - 0.5) * 0.35 + Math.sin(t * 0.4) * 0.04;
     g.rotation.y += (targetY - g.rotation.y) * Math.min(1, delta * 4);
@@ -222,7 +246,7 @@ function Points({
   );
 }
 
-export default function HeroScene({ sample, splitRef, active, onReady }: Props) {
+export default function HeroScene({ sample, splitRef, grabRef, active, onReady }: Props) {
   const [portrait, setPortrait] = useState<Portrait | null>(null);
 
   useEffect(() => {
@@ -248,7 +272,7 @@ export default function HeroScene({ sample, splitRef, active, onReady }: Props) 
       gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
       frameloop={active ? 'always' : 'never'}
       aria-hidden="true">
-      <Points portrait={portrait} splitRef={splitRef} onReady={onReady} />
+      <Points portrait={portrait} splitRef={splitRef} grabRef={grabRef} onReady={onReady} />
     </Canvas>
   );
 }

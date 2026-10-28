@@ -1,4 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { canRunScene } from './capability';
+import { createGrab } from './grab';
 import './HeroVisual.css';
 
 // The WebGL scene (three.js + R3F) is a separate chunk, downloaded only when the device can run it.
@@ -7,30 +9,10 @@ const HeroScene = lazy(() => import('./HeroScene'));
 interface Props {
   poster: string; // portrait used by the CSS fallback
   sample: string; // small portrait the particle scene samples brightness from
-  labels: { understand: string; build: string; description: string };
+  labels: { understand: string; build: string; description: string; stretch: string; poke: string };
 }
 
 const DEFAULT_SPLIT = 0.55;
-
-type NavigatorHints = Navigator & {
-  deviceMemory?: number;
-  connection?: { saveData?: boolean };
-};
-
-// Skip WebGL on reduced motion, data saver, low-end hardware, or when WebGL2 is unavailable.
-// Those visitors keep the CSS version, which shows the same idea.
-function canRunScene(): boolean {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-  const nav = navigator as NavigatorHints;
-  if (nav.connection?.saveData) return false;
-  if ((nav.hardwareConcurrency ?? 4) < 4) return false;
-  if (nav.deviceMemory !== undefined && nav.deviceMemory < 4) return false;
-  try {
-    return !!document.createElement('canvas').getContext('webgl2');
-  } catch {
-    return false;
-  }
-}
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
@@ -38,6 +20,7 @@ export default function HeroVisual({ poster, sample, labels }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   // Current split position (0 = all build, 1 = all understand), shared with the scene without re-renders.
   const splitRef = useRef(DEFAULT_SPLIT);
+  const grabRef = useRef(createGrab());
   const [sceneEnabled, setSceneEnabled] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
   const [inView, setInView] = useState(true);
@@ -80,12 +63,44 @@ export default function HeroVisual({ poster, sample, labels }: Props) {
     let running = false;
 
     const onMove = (e: PointerEvent) => {
-      if (e.pointerType === 'touch') return;
+      // Hold the split still while the face is being stretched.
+      if (e.pointerType === 'touch' || grabRef.current.down) return;
       const r = root.getBoundingClientRect();
       target = clamp((e.clientX - r.left) / r.width, 0.12, 0.88);
       lastMove = performance.now();
     };
     const onLeave = () => (target = null);
+
+    // Grab and stretch the face (mouse, pen), or poke it (touch, so the page still scrolls).
+    // Only the WebGL scene reacts; the handlers are cheap no-ops for the CSS poster.
+    const local = (e: PointerEvent) => {
+      const r = root.getBoundingClientRect();
+      return [e.clientX - r.left - r.width / 2, e.clientY - r.top - r.height / 2];
+    };
+    const grab = grabRef.current;
+    const onDown = (e: PointerEvent) => {
+      if (!root.classList.contains('is-live') || e.button !== 0) return;
+      const [x, y] = local(e);
+      if (e.pointerType === 'touch') {
+        grab.poke += 1;
+        grab.pokeX = x;
+        grab.pokeY = y;
+      } else {
+        e.preventDefault();
+        root.setPointerCapture(e.pointerId);
+        Object.assign(grab, { down: true, startX: x, startY: y, x, y });
+        root.toggleAttribute('data-grabbing', true);
+      }
+      root.toggleAttribute('data-touched', true);
+    };
+    const onDrag = (e: PointerEvent) => {
+      if (!grab.down) return;
+      [grab.x, grab.y] = local(e);
+    };
+    const onUp = () => {
+      grab.down = false;
+      root.toggleAttribute('data-grabbing', false);
+    };
 
     const tick = (now: number) => {
       const idle = target === null || now - lastMove > 3000;
@@ -112,6 +127,10 @@ export default function HeroVisual({ poster, sample, labels }: Props) {
 
     area.addEventListener('pointermove', onMove);
     area.addEventListener('pointerleave', onLeave);
+    root.addEventListener('pointerdown', onDown);
+    root.addEventListener('pointermove', onDrag);
+    root.addEventListener('pointerup', onUp);
+    root.addEventListener('pointercancel', onUp);
     observer.observe(root);
     return () => {
       running = false;
@@ -120,6 +139,10 @@ export default function HeroVisual({ poster, sample, labels }: Props) {
       resize.disconnect();
       area.removeEventListener('pointermove', onMove);
       area.removeEventListener('pointerleave', onLeave);
+      root.removeEventListener('pointerdown', onDown);
+      root.removeEventListener('pointermove', onDrag);
+      root.removeEventListener('pointerup', onUp);
+      root.removeEventListener('pointercancel', onUp);
     };
   }, []);
 
@@ -144,6 +167,7 @@ export default function HeroVisual({ poster, sample, labels }: Props) {
           <HeroScene
             sample={sample}
             splitRef={splitRef}
+            grabRef={grabRef}
             active={inView}
             onReady={() => setSceneReady(true)}
           />
@@ -157,6 +181,12 @@ export default function HeroVisual({ poster, sample, labels }: Props) {
       <span className="hv__label hv__label--build" aria-hidden="true">
         {labels.build}
       </span>
+      {sceneReady && (
+        <span className="hv__hint" aria-hidden="true">
+          <span className="hv__hint--fine">{labels.stretch}</span>
+          <span className="hv__hint--touch">{labels.poke}</span>
+        </span>
+      )}
     </div>
   );
 }

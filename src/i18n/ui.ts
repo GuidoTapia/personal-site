@@ -33,15 +33,46 @@ const en = {
       'Portrait of Guido Tapia Oré, split into a wireframe half for understanding and a solid half for building',
     understand: 'Understand',
     build: 'Build',
+    stretch: 'Drag to stretch',
+    poke: 'Tap to poke',
+  },
+  story: {
+    eyebrow: '01 · How I got here',
+    title: 'From robots to codebases.',
+    steps: [
+      {
+        kicker: '2017 · Nagoya',
+        title: 'I started with robots.',
+        body: 'At the UCSP Robotics Research Group I led the team that won the RoboCup Junior Soccer world championship in 2017, and we took second in Montreal the year after.',
+      },
+      {
+        kicker: 'Apselom',
+        title: 'Then the hardware got real.',
+        body: 'I designed smart waste-monitoring devices and wrote the C libraries behind them, which cut their debugging time in half.',
+      },
+      {
+        kicker: 'Designli',
+        title: 'Now I read codebases.',
+        body: 'About two prospective clients’ codebases a week, in whatever language they come in, looking for where they will break first.',
+      },
+      {
+        kicker: 'Next',
+        title: 'Then I help build it.',
+        body: 'Web and mobile products in React, Node.js, and React Native, with teams across the US and Europe. Same pieces, rebuilt.',
+      },
+    ],
+    // {files} is replaced at build time
+    cityNote:
+      'This city is this site’s own source: {files} files. Taller means changed more often; amber is where I’d look first.',
   },
   work: {
-    eyebrow: '01 · Work',
+    eyebrow: '02 · Work',
     title: 'Things I’ve audited, fixed, and built.',
     read: 'Read →',
     beyond: 'Beyond the day job',
   },
   experience: {
-    eyebrow: '02 · Experience',
+    eyebrow: '03 · Experience',
     title: 'Where I’ve worked.',
     alongside: 'Alongside the engineering',
     degree: 'Computer Science degree',
@@ -50,7 +81,7 @@ const en = {
     more: ['The full history is in my ', 'resume', '.'],
   },
   about: {
-    eyebrow: '03 · About',
+    eyebrow: '04 · About',
     title: 'The short version.',
     body: [
       'Hey there, I’m Guido. I build full-stack web and mobile apps, but my real specialty is making sure no one makes them crash right before the demo. These days that instinct is my job: I read other teams’ codebases, find what will break, and explain it in terms a founder can act on.',
@@ -63,7 +94,7 @@ const en = {
       'Languages I read and reason about in client audits, alongside everything in the list above.',
   },
   contact: {
-    eyebrow: '04 · Contact',
+    eyebrow: '05 · Contact',
     title: 'Let’s talk.',
     body: 'I’m open to new opportunities: full-time roles in full-stack engineering, technical leadership, or solutions advisory, remote or on-site, and project proposals too. Whether you have a role in mind, a codebase you want a second opinion on, or just want to say hi, my inbox is open and I’ll get back to you.',
   },
@@ -118,15 +149,45 @@ const es = {
       'Retrato de Guido Tapia Oré, dividido en una mitad de malla para entender y una mitad sólida para construir',
     understand: 'Entender',
     build: 'Construir',
+    stretch: 'Arrastra para estirar',
+    poke: 'Toca para empujar',
+  },
+  story: {
+    eyebrow: '01 · Cómo llegué aquí',
+    title: 'De robots a bases de código.',
+    steps: [
+      {
+        kicker: '2017 · Nagoya',
+        title: 'Empecé con robots.',
+        body: 'En el Grupo de Investigación en Robótica de la UCSP lideré el equipo que ganó el campeonato mundial de RoboCup Junior Soccer en 2017, y al año siguiente quedamos segundos en Montreal.',
+      },
+      {
+        kicker: 'Apselom',
+        title: 'Después, hardware de verdad.',
+        body: 'Diseñé dispositivos inteligentes de monitoreo de residuos y escribí las librerías en C detrás de ellos, que redujeron su tiempo de depuración a la mitad.',
+      },
+      {
+        kicker: 'Designli',
+        title: 'Hoy leo bases de código.',
+        body: 'Unas dos bases de código de clientes potenciales por semana, en el lenguaje que vengan, buscando dónde se van a romper primero.',
+      },
+      {
+        kicker: 'Lo que sigue',
+        title: 'Después ayudo a construirlo.',
+        body: 'Productos web y móviles con React, Node.js y React Native, junto a equipos en EE. UU. y Europa. Las mismas piezas, reconstruidas.',
+      },
+    ],
+    cityNote:
+      'Esta ciudad es el código de este mismo sitio: {files} archivos. Más alto significa que cambió más seguido; en ámbar, donde miraría primero.',
   },
   work: {
-    eyebrow: '01 · Trabajo',
+    eyebrow: '02 · Trabajo',
     title: 'Lo que he auditado, arreglado y construido.',
     read: 'Leer →',
     beyond: 'Más allá del trabajo',
   },
   experience: {
-    eyebrow: '02 · Experiencia',
+    eyebrow: '03 · Experiencia',
     title: 'Dónde he trabajado.',
     alongside: 'Además de la ingeniería',
     degree: 'Ciencia de la Computación',
@@ -135,7 +196,7 @@ const es = {
     more: ['La historia completa está en mi ', 'CV', '.'],
   },
   about: {
-    eyebrow: '03 · Sobre mí',
+    eyebrow: '04 · Sobre mí',
     title: 'La versión corta.',
     body: [
       'Hola, soy Guido. Construyo apps web y móviles full-stack, pero mi verdadera especialidad es asegurarme de que nadie las haga caer justo antes de la demo. Hoy ese instinto es mi trabajo: leo las bases de código de otros equipos, encuentro lo que se va a romper y lo explico en términos que un fundador pueda usar para decidir.',
@@ -148,7 +209,7 @@ const es = {
       'Lenguajes que leo y analizo en auditorías para clientes, además de todo lo de la lista anterior.',
   },
   contact: {
-    eyebrow: '04 · Contacto',
+    eyebrow: '05 · Contacto',
     title: 'Conversemos.',
     body: 'Estoy abierto a nuevas oportunidades: roles a tiempo completo en ingeniería full-stack, liderazgo técnico o asesoría de soluciones, remotos o presenciales, y también propuestas de proyectos. Si tienes un rol en mente, una base de código que quieres que revise o solo quieres saludar, escríbeme y te respondo.',
   },
