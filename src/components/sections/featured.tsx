@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
-import { GatsbyImage, getImage } from 'gatsby-plugin-image';
+import { GatsbyImage, getImage, ImageDataLike } from 'gatsby-plugin-image';
 import styled from 'styled-components';
 import sr from '@utils/sr';
 import { srConfig } from '@config';
@@ -303,16 +303,10 @@ const StyledProject = styled.li`
   }
 `;
 
-interface Cover {
-  childImageSharp: {
-    gatsbyImageData: any;
-  };
-}
-
 interface Frontmatter {
   title: string;
   overline: string;
-  cover: Cover;
+  cover: ImageDataLike | null;
   tech: string[];
   github?: string;
   external?: string;
@@ -339,7 +333,7 @@ const Featured: React.FC = () => {
     {
       featured: allMarkdownRemark(
         filter: { fileAbsolutePath: { regex: "/content/featured/" } }
-        sort: { fields: [frontmatter___date], order: ASC }
+        sort: { frontmatter: { date: ASC } }
       ) {
         edges {
           node {
@@ -396,7 +390,11 @@ const Featured: React.FC = () => {
             const image = getImage(cover);
 
             return (
-              <StyledProject key={i} ref={el => { revealProjects.current[i] = el; }}>
+              <StyledProject
+                key={i}
+                ref={el => {
+                  revealProjects.current[i] = el;
+                }}>
                 <div className="project-content">
                   <div>
                     <p className="project-overline">{overline}</p>
@@ -440,7 +438,7 @@ const Featured: React.FC = () => {
 
                 <div className="project-image">
                   <a href={external ? external : github ? github : '#'}>
-                    <GatsbyImage image={image} alt={title} className="img" />
+                    {image && <GatsbyImage image={image} alt={title} className="img" />}
                   </a>
                 </div>
               </StyledProject>

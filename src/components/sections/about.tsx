@@ -130,14 +130,14 @@ const About: React.FC = () => {
   }, [prefersReducedMotion]);
 
   const skills = [
-    'JavaScript (ES6+)',
     'TypeScript',
-    'React',
+    'React & Next.js',
     'Node.js',
     'React Native',
-    'Python',
+    'C# / .NET',
     'PostgreSQL',
-    'GraphQL',
+    'AWS',
+    'SonarQube',
   ];
 
   return (
@@ -148,20 +148,21 @@ const About: React.FC = () => {
         <StyledText>
           <div>
             <p>
-              Hey there, I'm Guido. I build full-stack web and mobile apps, but my real specialty is
-              making sure no one makes them crash right before the demo. My background runs from
-              robotics competitions to mentoring developers and leading projects for clients across
-              the US and Europe. These days, I'm all about creating products that scale — and
+              Hey there, I&apos;m Guido. I build full-stack web and mobile apps, but my real
+              specialty is making sure no one makes them crash right before the demo. These days
+              that instinct is my job: I read other teams&apos; codebases, find what will break, and
+              explain it in terms a founder can act on. When I&apos;m not doing that, I&apos;m
               occasionally using my free time to compose the next summer hit.
             </p>
 
             <p>
-              Fast-forward to today, and I've had the privilege of working at
-              <a href="https://ravn.co/">RAVN Development</a>, where I grew from trainee to software
-              engineer and led multiple client projects,
-              <a href="https://www.edusoftnet.pe/">Edusoftnet</a>, building automation modules for
-              schools, and <a href="https://apselom.com/">Apselom</a>, developing smart devices and
-              mobile apps.
+              Today I&apos;m at <a href="https://designli.co/">Designli</a>, evaluating codebases in
+              seven languages and turning the findings into technical proposals. Before that I spent
+              over four years at <a href="https://ravn.co/">RAVN Development</a>, where I grew from
+              trainee to software engineer, led teams of 2 to 10 developers, and cut onboarding for
+              new hires from three months to one. Earlier, I built school automation at{' '}
+              <a href="https://www.edusoftnet.pe/">Edusoftnet</a> and smart devices at{' '}
+              <a href="https://apselom.com/">Apselom</a>.
             </p>
 
             <p>
@@ -172,11 +173,11 @@ const About: React.FC = () => {
                 rel="noreferrer">
                 won the Robocup Soccer League World Championship
               </a>{' '}
-              in 2017, an experience that pushed my problem-solving and teamwork skills to the next
-              level.
+              in 2017 and taking 2nd place in 2018. That experience pushed my problem-solving and
+              teamwork skills to the next level.
             </p>
 
-            <p>Here are a few technologies I've been working with recently:</p>
+            <p>Here are a few technologies I&apos;ve been working with recently:</p>
           </div>
 
           <ul className="skills-list">
@@ -191,8 +192,8 @@ const About: React.FC = () => {
               src="../../images/me.jpeg"
               width={500}
               quality={95}
-              formats={['AUTO', 'WEBP', 'AVIF']}
-              alt="Headshot"
+              formats={['auto', 'webp', 'avif']}
+              alt="Guido Tapia Oré"
             />
           </div>
         </StyledPic>

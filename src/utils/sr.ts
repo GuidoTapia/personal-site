@@ -1,5 +1,3 @@
-import { srConfig } from '@config';
-
 // Check if we're in the browser
 const isBrowser = typeof window !== 'undefined';
 
@@ -21,7 +19,7 @@ const defaultOptions = {
 };
 
 // ScrollReveal instance
-let sr: any = null;
+let sr: { reveal: (el: HTMLElement, options: object) => void } | null = null;
 
 // Initialize ScrollReveal
 const initScrollReveal = async () => {

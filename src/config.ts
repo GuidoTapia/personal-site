@@ -50,18 +50,10 @@ const config: Config = {
       name: 'Instagram',
       url: 'https://www.instagram.com/guido.ore',
     },
-    /*{
-      name: 'Twitter',
-      url: 'https://twitter.com/bchiang7',
-    },*/
     {
       name: 'Linkedin',
       url: 'https://www.linkedin.com/in/gl-tapia-ore-2601/',
     },
-    /*{
-      name: 'Codepen',
-      url: 'https://codepen.io/bchiang7',
-    },*/
   ],
 
   navLinks: [

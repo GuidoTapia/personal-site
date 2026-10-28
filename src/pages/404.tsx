@@ -29,9 +29,7 @@ const StyledHomeButton = styled(Link)`
   margin-top: 40px;
 `;
 
-interface NotFoundPageProps extends PageProps {}
-
-const NotFoundPage: React.FC<NotFoundPageProps> = ({ location }) => {
+const NotFoundPage: React.FC<PageProps> = ({ location }) => {
   const [isMounted, setIsMounted] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
 

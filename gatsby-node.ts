@@ -5,84 +5,32 @@
  */
 
 import path from 'path';
-import _ from 'lodash';
 import { GatsbyNode } from 'gatsby';
 
-export const createPages: GatsbyNode['createPages'] = async ({ actions, graphql, reporter }) => {
-  const { createPage } = actions;
-  const postTemplate = path.resolve(`src/templates/post.tsx`);
-  const tagTemplate = path.resolve('src/templates/tag.tsx');
+// Explicit frontmatter schema so optional fields (github, cta, ...) stay queryable
+// even when no markdown file currently sets them.
+// https://www.gatsbyjs.com/docs/reference/graphql-data-layer/schema-customization/
+export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = ({ actions }) => {
+  actions.createTypes(`
+    type MarkdownRemark implements Node {
+      frontmatter: MarkdownRemarkFrontmatter
+    }
 
-  const result = await graphql(`
-    {
-      postsRemark: allMarkdownRemark(
-        filter: { fileAbsolutePath: { regex: "/content/posts/" } }
-        sort: { frontmatter: { date: DESC } }
-        limit: 1000
-      ) {
-        edges {
-          node {
-            frontmatter {
-              slug
-            }
-          }
-        }
-      }
-      tagsGroup: allMarkdownRemark(limit: 2000) {
-        group(field: { frontmatter: { tags: SELECT } }) {
-          fieldValue
-        }
-      }
+    type MarkdownRemarkFrontmatter {
+      date: String
+      title: String
+      company: String
+      location: String
+      range: String
+      url: String
+      overline: String
+      cover: File @fileByRelativePath
+      tech: [String]
+      github: String
+      external: String
+      cta: String
     }
   `);
-
-  // Handle errors
-  if (result.errors) {
-    reporter.panicOnBuild(`Error while running GraphQL query.`);
-    return;
-  }
-
-  // Type the result data
-  const data = result.data as {
-    postsRemark: {
-      edges: Array<{
-        node: {
-          frontmatter: {
-            slug: string;
-          };
-        };
-      }>;
-    };
-    tagsGroup: {
-      group: Array<{
-        fieldValue: string;
-      }>;
-    };
-  };
-
-  // Create post detail pages
-  const posts = data.postsRemark.edges;
-
-  posts.forEach(({ node }) => {
-    createPage({
-      path: node.frontmatter.slug,
-      component: postTemplate,
-      context: {},
-    });
-  });
-
-  // Extract tag data from query
-  const tags = data.tagsGroup.group;
-  // Make tag pages
-  tags.forEach(tag => {
-    createPage({
-      path: `/pensieve/tags/${_.kebabCase(tag.fieldValue)}/`,
-      component: tagTemplate,
-      context: {
-        tag: tag.fieldValue,
-      },
-    });
-  });
 };
 
 // https://www.gatsbyjs.org/docs/node-apis/#onCreateWebpackConfig
