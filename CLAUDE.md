@@ -19,6 +19,7 @@ Node is pinned in `.nvmrc` (22.23.4; Astro 7 needs ≥22.23.4). Package manager 
 - Netlify, continuous deployment from `main` of `github.com/GuidoTapia/personal-site` (public repo). PRs get deploy previews.
 - `netlify.toml` (`yarn build` → `dist/`) overrides the Netlify UI. It also holds security headers, immutable caching for `/_astro/*`, and 301s for the old Gatsby routes (`/pensieve/*`, `/archive`).
 - **Pushing to `main` deploys to production.** Work on a branch and open a PR.
+- **Netlify build minutes are limited.** Every push to a PR branch builds a deploy preview, and every merge builds production. Open a PR only when Guido asks for one. Batch related changes into one branch and one PR instead of several small ones, and push to an open PR branch as rarely as possible (verify locally with `yarn build && yarn preview` first).
 - `site` in `astro.config.mjs` is the canonical origin (og:image, canonical, sitemap). `public/robots.txt` repeats it. Update both if a custom domain is attached.
 - `public/sw.js` is a kill switch for the service worker the old Gatsby site installed. Keep it, and keep it uncached, for at least several months after the migration.
 
