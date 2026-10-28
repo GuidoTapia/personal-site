@@ -3,11 +3,12 @@ date: '2021-05-01'
 title: 'Software Engineer (Progressed from Trainee)'
 company: 'RAVN'
 location: 'American Fork, UT (Remote)'
-range: 'May 2021 - Aug 2025'
+range: 'May 2021 - Dec 2025'
 url: 'https://ravn.co/'
 ---
 
-- Promoted from Trainee to Software Engineer within the first quarter, later entrusted with leadership responsibilities across multiple projects
-- Designed and delivered 5+ full-stack web and mobile apps with React, Node.js, and related tools, serving clients in the US and Europe
-- Led teams of 2–10 developers, coordinating workflows, mentoring 10+ junior hires, and reducing onboarding time from 3 months to 1 month while ensuring high-quality delivery
-- Engaged directly with English-speaking clients to define scope and deliver tailored solutions, ensuring alignment with business goals
+- Promoted from Trainee to Software Engineer within the first quarter, then entrusted with leadership across multiple projects
+- Designed and delivered 5+ full-stack web and mobile apps with React, Node.js, and React Native for clients in the US and Europe
+- Led a turnaround of a React Native social app rated 1 star: stabilized and rebuilt it, recovered a sustained 4 to 5 star rating, and reactivated 1,000+ users in the first 2 weeks
+- Integrated payment gateways across Stripe, PayPal, Mercado Pago, Culqi, and Moyasar + Mada for products serving the US, LATAM, and Saudi Arabia
+- Led teams of 2 to 10 developers, mentored 10+ junior hires, and reduced onboarding time from 3 months to 1 month

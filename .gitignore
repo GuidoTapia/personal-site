@@ -1,11 +1,21 @@
-# Project dependencies
-.cache
+# Dependencies
 node_modules
 yarn-error.log
 package-lock.json
 
-# Build directory
+# Gatsby build output and cache
+.cache
 /public
-.DS_Store
 
+# Environment
+.env*
+!.env.example
+
+# OS / editor noise (the repo often lives on an exFAT drive, which creates ._ files)
+.DS_Store
+._*
 .vscode/
+.idea/
+
+# Private career source material (phone, references). Local only.
+context/

@@ -9,7 +9,11 @@ interface UseScrollDirectionOptions {
   off?: boolean;
 }
 
-const useScrollDirection = ({ initialDirection, thresholdPixels, off }: UseScrollDirectionOptions = {}) => {
+const useScrollDirection = ({
+  initialDirection,
+  thresholdPixels,
+  off,
+}: UseScrollDirectionOptions = {}) => {
   const [scrollDir, setScrollDir] = useState(initialDirection);
 
   useEffect(() => {
@@ -42,7 +46,11 @@ const useScrollDirection = ({ initialDirection, thresholdPixels, off }: UseScrol
      * Bind the scroll handler if `off` is set to false.
      * If `off` is set to true reset the scroll direction.
      */
-    !off ? window.addEventListener('scroll', onScroll) : setScrollDir(initialDirection);
+    if (off) {
+      setScrollDir(initialDirection);
+    } else {
+      window.addEventListener('scroll', onScroll);
+    }
 
     return () => window.removeEventListener('scroll', onScroll);
   }, [initialDirection, thresholdPixels, off]);

@@ -4,7 +4,7 @@ import anime from 'animejs';
 import styled from 'styled-components';
 import { IconLoader } from '@components/icons';
 
-const StyledLoader = styled.div<{ isMounted: boolean }>`
+const StyledLoader = styled.div<{ $isMounted: boolean }>`
   ${({ theme }) => theme.mixins.flexCenter};
   position: fixed;
   top: 0;
@@ -20,7 +20,7 @@ const StyledLoader = styled.div<{ isMounted: boolean }>`
     width: max-content;
     max-width: 100px;
     transition: var(--transition);
-    opacity: ${props => (props.isMounted ? 1 : 0)};
+    opacity: ${props => (props.$isMounted ? 1 : 0)};
     svg {
       display: block;
       width: 100%;
@@ -85,8 +85,8 @@ const Loader: React.FC<LoaderProps> = ({ finishLoading }) => {
   }, []);
 
   return (
-    <StyledLoader className="loader" isMounted={isMounted}>
-      <Helmet bodyAttributes={{ class: `hidden` }} />
+    <StyledLoader className="loader" $isMounted={isMounted}>
+      <Helmet bodyAttributes={{ class: 'hidden' }} />
 
       <div className="logo-wrapper">
         <IconLoader />

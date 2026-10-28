@@ -6,7 +6,7 @@ cover: './amigra.jpeg'
 external: 'https://www.linkedin.com/company/a-m-i-g-r-a/'
 tech:
   - JavaScript
-  - Wordpress
+  - WordPress
   - HTML5
   - CSS
 ---

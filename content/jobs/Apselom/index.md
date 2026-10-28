@@ -8,4 +8,4 @@ url: 'https://apselom.com/'
 ---
 
 - Designed smart waste-monitoring devices and built C libraries that cut debugging time by 50%
-- Delivered an Android/iOS tracking app to improve locations waste management
+- Delivered an Android/iOS tracking app to improve waste-management operations across locations

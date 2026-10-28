@@ -8,7 +8,7 @@ import { useScrollDirection, usePrefersReducedMotion } from '@hooks';
 import { Menu } from '@components';
 import { IconLogo, IconHex } from '@components/icons';
 
-const StyledHeader = styled.header<{ scrollDirection: string; scrolledToTop: boolean }>`
+const StyledHeader = styled.header<{ $scrollDirection?: string; $scrolledToTop: boolean }>`
   ${({ theme }) => theme.mixins.flexBetween};
   position: fixed;
   top: 0;
@@ -32,8 +32,8 @@ const StyledHeader = styled.header<{ scrollDirection: string; scrolledToTop: boo
 
   @media (prefers-reduced-motion: no-preference) {
     ${props =>
-      props.scrollDirection === 'up' &&
-      !props.scrolledToTop &&
+      props.$scrollDirection === 'up' &&
+      !props.$scrolledToTop &&
       css`
         height: var(--nav-scroll-height);
         transform: translateY(0px);
@@ -42,8 +42,8 @@ const StyledHeader = styled.header<{ scrollDirection: string; scrolledToTop: boo
       `};
 
     ${props =>
-      props.scrollDirection === 'down' &&
-      !props.scrolledToTop &&
+      props.$scrollDirection === 'down' &&
+      !props.$scrolledToTop &&
       css`
         height: var(--nav-scroll-height);
         transform: translateY(calc(var(--nav-scroll-height) * -1));
@@ -175,7 +175,7 @@ interface NavProps {
 
 const Nav: React.FC<NavProps> = ({ isHome }) => {
   const [isMounted, setIsMounted] = useState(!isHome);
-  const scrollDirection = useScrollDirection('down');
+  const scrollDirection = useScrollDirection({ initialDirection: 'down' });
   const [scrolledToTop, setScrolledToTop] = useState(true);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -237,7 +237,7 @@ const Nav: React.FC<NavProps> = ({ isHome }) => {
   );
 
   return (
-    <StyledHeader scrollDirection={scrollDirection} scrolledToTop={scrolledToTop}>
+    <StyledHeader $scrollDirection={scrollDirection} $scrolledToTop={scrolledToTop}>
       <StyledNav>
         {prefersReducedMotion ? (
           <>
