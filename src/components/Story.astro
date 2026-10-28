@@ -1,0 +1,202 @@
+---
+import { getImage } from 'astro:assets';
+import portrait from '@/assets/me.jpeg';
+import StoryVisual from '@/components/story/StoryVisual';
+import type { Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
+import { getCodeCity } from '@/lib/codeCity';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = ui[Astro.props.lang];
+const city = getCodeCity();
+const sample = await getImage({ src: portrait, width: 200, format: 'webp', quality: 90 });
+const cityNote = t.story.cityNote.replace('{files}', String(city.files));
+---
+
+<!--
+  "How I got here": the hero's particles re-form into one shape per chapter as you scroll
+  (robot, chip, blackboard, phone, this site's own codebase as a city, a bar of music, a board
+  game, the face rebuilt). Without the WebGL
+  scene the chapters render as a plain list, so the content never depends on it.
+-->
+<section
+  id="story"
+  class="section story"
+  aria-labelledby="story-title"
+  data-story
+  data-bp="Story.astro · static HTML, scroll-driven">
+  <div class="container">
+    <div class="story__grid">
+      <div class="story__copy">
+        <p class="eyebrow">{t.story.eyebrow}</p>
+        <h2 id="story-title" class="section-title">
+          {t.story.title}
+        </h2>
+        <ol class="story__steps">
+          {t.story.steps.map((step, i) => (
+            <li class="story__step" data-step={i + 1}>
+              <p class="story__kicker">{step.kicker}</p>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+              {i === 4 && city.files > 0 && <p class="story__note">{cityNote}</p>}
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div
+        class="story__stage"
+        aria-hidden="true"
+        data-bp="StoryVisual.tsx · React island, client:visible"
+        data-bp-island="StoryScene.tsx · three.js, lazy, gated"
+        data-bp-note="WebGL canvas · eight shapes, one shader">
+        <StoryVisual client:visible sample={sample.src} buildings={city.buildings} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Decide the layout before the scene loads, so the section doesn't jump when it does.
+  import { canRunScene } from '@/components/hero/capability';
+
+  if (canRunScene()) {
+    document.querySelectorAll<HTMLElement>('[data-story]').forEach(s => (s.dataset.scene = 'on'));
+  }
+</script>
+
+<style>
+  .story__steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 28px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .story__step h3 {
+    margin: 0 0 10px;
+    font-size: var(--fz-lg);
+  }
+
+  .story__step p {
+    margin: 0;
+  }
+
+  .story__kicker {
+    margin: 0 0 10px !important;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* The note describes the city, so it only shows when the scene can draw it. */
+  .story__note {
+    display: none;
+  }
+
+  [data-scene='on'] .story__note {
+    display: block;
+    margin-top: 14px !important;
+    padding-left: 12px;
+    border-left: 2px solid var(--accent);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    line-height: 1.6;
+  }
+
+  .story__stage {
+    display: none;
+  }
+
+  /* Scroll story: chapters scroll past a pinned stage where the particles morph. */
+  [data-scene='on'] .story__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(24px, 5vw, 72px);
+  }
+
+  [data-scene='on'] .story__steps {
+    display: block;
+  }
+
+  [data-scene='on'] .story__step {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 78vh;
+    max-width: 44ch;
+    opacity: 0.35;
+    transition: opacity 0.5s var(--ease);
+  }
+
+  [data-scene='on'] .story__steps {
+    padding-top: 18vh;
+  }
+
+  [data-scene='on'][data-at='1'] .story__step[data-step='1'],
+  [data-scene='on'][data-at='2'] .story__step[data-step='2'],
+  [data-scene='on'][data-at='3'] .story__step[data-step='3'],
+  [data-scene='on'][data-at='4'] .story__step[data-step='4'],
+  [data-scene='on'][data-at='5'] .story__step[data-step='5'],
+  [data-scene='on'][data-at='6'] .story__step[data-step='6'],
+  [data-scene='on'][data-at='7'] .story__step[data-step='7'],
+  [data-scene='on'][data-at='8'] .story__step[data-step='8'] {
+    opacity: 1;
+  }
+
+  [data-scene='on'] .story__stage {
+    display: block;
+    position: sticky;
+    top: calc(var(--header-h) + 4vh);
+    height: calc(100vh - var(--header-h) - 8vh);
+  }
+
+  .story__stage :global(.story-visual) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .story__stage :global(.story-visual canvas) {
+    opacity: 0;
+    transition: opacity 0.8s var(--ease);
+  }
+
+  .story__stage :global(.story-visual.is-live canvas) {
+    opacity: 1;
+  }
+
+  /* Phones: the stage pins to the top half, and chapters scroll up underneath it. */
+  @media (max-width: 760px) {
+    [data-scene='on'] .story__grid {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 0;
+    }
+
+    [data-scene='on'] .story__stage {
+      top: var(--header-h);
+      z-index: 1;
+      height: 46vh;
+      margin-inline: calc(var(--gutter) * -1);
+      background: linear-gradient(var(--bg) 82%, transparent);
+    }
+
+    [data-scene='on'] .story__steps {
+      padding-top: 0;
+    }
+
+    [data-scene='on'] .story__step {
+      min-height: 62vh;
+      justify-content: flex-start;
+    }
+  }
+</style>

@@ -152,3 +152,49 @@
   background: var(--accent);
   color: var(--accent-ink);
 }
+
+/* Grab and stretch: only once the WebGL scene is live */
+.hv.is-live {
+  cursor: grab;
+}
+
+.hv[data-grabbing] {
+  cursor: grabbing;
+}
+
+.hv__hint {
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  z-index: 2;
+  translate: -50% 0;
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--bg) 70%, transparent);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+
+.hv[data-touched] .hv__hint {
+  opacity: 0;
+}
+
+.hv__hint--touch {
+  display: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .hv__hint--fine {
+    display: none;
+  }
+
+  .hv__hint--touch {
+    display: inline;
+  }
+}

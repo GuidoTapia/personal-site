@@ -18,7 +18,7 @@ const poster = await getImage({ src: portrait, width: 760, format: 'webp', quali
 const sample = await getImage({ src: portrait, width: 200, format: 'webp', quality: 90 });
 ---
 
-<section class="hero" data-hero aria-labelledby="hero-title">
+<section class="hero" data-hero data-bp="Hero.astro · static HTML" aria-labelledby="hero-title">
   <div class="container hero__grid">
     <div class="hero__copy">
       <p class="hero__status enter" style="--i: 0">
@@ -57,7 +57,12 @@ const sample = await getImage({ src: portrait, width: 200, format: 'webp', quali
       </div>
     </div>
 
-    <div class="hero__visual enter" style="--i: 2">
+    <div
+      class="hero__visual enter"
+      style="--i: 2"
+      data-bp="HeroVisual.tsx · React island, client:idle"
+      data-bp-island="HeroScene.tsx · three.js, lazy, gated"
+      data-bp-note="WebGL canvas · loads only on capable devices">
       <HeroVisual
         client:idle
         poster={poster.src}
@@ -65,6 +70,8 @@ const sample = await getImage({ src: portrait, width: 200, format: 'webp', quali
         labels={{
           understand: t.hero.understand,
           build: t.hero.build,
+          stretch: t.hero.stretch,
+          poke: t.hero.poke,
           description: t.hero.visualLabel,
         }}
       />

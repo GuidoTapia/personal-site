@@ -10,7 +10,11 @@ interface Props {
 const t = ui[Astro.props.lang];
 ---
 
-<section id="about" class="section" aria-labelledby="about-title">
+<section
+  id="about"
+  class="section"
+  data-bp="About.astro · static HTML"
+  aria-labelledby="about-title">
   <div class="container about">
     <div>
       <p class="eyebrow">{t.about.eyebrow}</p>
@@ -24,7 +28,7 @@ const t = ui[Astro.props.lang];
       </div>
     </div>
 
-    <aside class="skills" aria-label={t.a11y.skills}>
+    <aside class="skills" aria-label={t.a11y.skills} data-bp="skills · src/data/site.ts">
       <div>
         <h3>{t.about.ship}</h3>
         <ul class="tags">
