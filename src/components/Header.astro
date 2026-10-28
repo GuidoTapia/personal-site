@@ -120,17 +120,24 @@ const switcher = (Object.keys(languages) as Lang[]).map(l => ({
 
   /* Reading progress: an amber hairline on the header's bottom edge, driven by page scroll */
   @media (prefers-reduced-motion: no-preference) {
+    .header::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 1px;
+      background: var(--accent);
+      transform-origin: 0 50%;
+      /* Browsers without scroll timelines get --scroll-progress from src/scripts/motion.ts */
+      transform: scaleX(var(--scroll-progress, 0));
+    }
+
     @supports (animation-timeline: scroll()) {
       .header::after {
-        content: '';
-        position: absolute;
-        right: 0;
-        bottom: -1px;
-        left: 0;
-        height: 1px;
-        background: var(--accent);
-        transform-origin: 0 50%;
-        animation: progress linear both;
+        animation-name: progress;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
         animation-timeline: scroll(root);
       }
 
