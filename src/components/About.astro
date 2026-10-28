@@ -1,0 +1,98 @@
+---
+import { skills } from '@/data/site';
+import type { Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = ui[Astro.props.lang];
+---
+
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="container about">
+    <div>
+      <p class="eyebrow">{t.about.eyebrow}</p>
+      <h2 id="about-title" class="section-title">
+        {t.about.title}
+      </h2>
+      <div class="about__text">
+        {t.about.body.map(p => (
+          <p>{p}</p>
+        ))}
+      </div>
+    </div>
+
+    <aside class="skills" aria-label={t.a11y.skills}>
+      <div>
+        <h3>{t.about.ship}</h3>
+        <ul class="tags">
+          {skills.ship.map(s => (
+            <li>{s}</li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3>{t.about.review}</h3>
+        <ul class="tags tags--quiet">
+          {skills.review.map(s => (
+            <li>{s}</li>
+          ))}
+        </ul>
+        <p class="skills__note">{t.about.reviewNote}</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 80px);
+  }
+
+  .about__text {
+    max-width: 62ch;
+  }
+
+  .skills {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-self: end;
+    padding: 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+  }
+
+  h3 {
+    margin-bottom: 14px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .tags--quiet li {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--muted);
+  }
+
+  .skills__note {
+    margin: 14px 0 0;
+    font-size: var(--fz-xs);
+    color: var(--faint);
+  }
+
+  @media (max-width: 900px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

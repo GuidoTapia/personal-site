@@ -1,0 +1,24 @@
+---
+import Base from '@/layouts/Base.astro';
+import Hero from '@/components/Hero.astro';
+import Work from '@/components/Work.astro';
+import Experience from '@/components/Experience.astro';
+import About from '@/components/About.astro';
+import Contact from '@/components/Contact.astro';
+import type { Lang } from '@/i18n';
+
+// Shared by / and /es/.
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<Base>
+  <Hero lang={lang} />
+  <Work lang={lang} />
+  <Experience lang={lang} />
+  <About lang={lang} />
+  <Contact lang={lang} />
+</Base>

@@ -1,0 +1,54 @@
+---
+import Base from '@/layouts/Base.astro';
+import { ui } from '@/i18n/ui';
+
+// One static 404 serves both languages, so it shows both.
+const { en, es } = ui;
+---
+
+<Base title={en.notFound.title}>
+  <section class="container notfound">
+    <p class="eyebrow">404</p>
+    <h1>{en.notFound.heading}</h1>
+    <p>{en.notFound.body}</p>
+    <p lang="es" class="notfound__es">
+      {es.notFound.body}
+    </p>
+    <div class="notfound__actions">
+      <a class="btn btn--primary" href="/">
+        {en.notFound.back}
+      </a>
+      <a class="btn" href="/es/" lang="es">
+        {es.notFound.back}
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notfound {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: calc(100svh - var(--header-h) - 90px);
+    padding-block: 64px;
+  }
+
+  h1 {
+    max-width: 18ch;
+    margin-bottom: 20px;
+    font-size: var(--fz-2xl);
+    letter-spacing: -0.035em;
+  }
+
+  .notfound__es {
+    color: var(--faint);
+  }
+
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>

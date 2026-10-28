@@ -1,0 +1,15 @@
+---
+import type { GetStaticPaths } from 'astro';
+import WorkEntry from '@/views/WorkEntry.astro';
+import { getWork, slugOf } from '@/i18n';
+
+export const getStaticPaths = (async () => {
+  const work = await getWork('en');
+  return work.map((entry, i) => ({
+    params: { slug: slugOf(entry.id) },
+    props: { entry, next: work[(i + 1) % work.length] },
+  }));
+}) satisfies GetStaticPaths;
+---
+
+<WorkEntry lang="en" {...Astro.props} />

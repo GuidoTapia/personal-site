@@ -1,0 +1,259 @@
+---
+import { Image } from 'astro:assets';
+import { getWork, localePath, slugOf } from '@/i18n';
+import type { Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const work = await getWork(lang);
+const caseStudies = work.filter(w => w.data.kind === 'case-study');
+const achievements = work.filter(w => w.data.kind === 'achievement');
+---
+
+<section id="work" class="section" aria-labelledby="work-title">
+  <div class="container">
+    <p class="eyebrow">{t.work.eyebrow}</p>
+    <h2 id="work-title" class="section-title">
+      {t.work.title}
+    </h2>
+
+    <ul class="cases">
+      {caseStudies.map((item, i) => (
+        <li class="case reveal">
+          <a class="case__link" href={localePath(lang, `/work/${slugOf(item.id)}/`)} data-spotlight>
+            <span class="case__index">{String(i + 1).padStart(2, '0')}</span>
+            <div class="case__body">
+              <p class="case__meta">
+                {item.data.role} · {item.data.period}
+              </p>
+              <h3>{item.data.title}</h3>
+              <p class="case__summary">{item.data.summary}</p>
+            </div>
+            <span class="case__cta" aria-hidden="true">
+              {t.work.read}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <h3 class="sub">{t.work.beyond}</h3>
+    <ul class="extras">
+      {achievements.map(item => (
+        <li class="extra reveal">
+          <a href={localePath(lang, `/work/${slugOf(item.id)}/`)} data-tilt data-spotlight>
+            {item.data.cover && (
+              <Image
+                src={item.data.cover}
+                alt={item.data.coverAlt ?? ''}
+                width={640}
+                quality={75}
+                class="extra__img"
+              />
+            )}
+            <div class="extra__body">
+              <p class="case__meta">{item.data.period}</p>
+              <h4>{item.data.title}</h4>
+              <p>{item.data.summary}</p>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .cases {
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .case {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .case__link {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    gap: 24px;
+    padding: 32px 8px;
+    transition: background-color 0.25s var(--ease);
+  }
+
+  .case__link:hover {
+    background:
+      radial-gradient(
+        420px circle at var(--mx, 50%) var(--my, 50%),
+        color-mix(in oklab, var(--accent) 9%, transparent),
+        transparent 70%
+      ),
+      var(--bg-raised);
+  }
+
+  .case__body,
+  .case__index {
+    transition:
+      translate 0.35s var(--ease),
+      color 0.2s var(--ease);
+  }
+
+  .case__link:hover .case__body {
+    translate: 6px 0;
+  }
+
+  .case__index {
+    padding-top: 4px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: var(--fz-sm);
+  }
+
+  .case__link:hover .case__index,
+  .case__link:hover h3 {
+    color: var(--accent);
+  }
+
+  .case__meta {
+    margin: 0 0 8px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+
+  h3 {
+    font-size: var(--fz-lg);
+    transition: color 0.2s var(--ease);
+  }
+
+  .case__summary {
+    max-width: 62ch;
+    margin: 10px 0 0;
+  }
+
+  .case__cta {
+    align-self: center;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition:
+      opacity 0.25s var(--ease),
+      transform 0.25s var(--ease);
+  }
+
+  .case__link:hover .case__cta,
+  .case__link:focus-visible .case__cta {
+    opacity: 1;
+    transform: none;
+  }
+
+  .sub {
+    margin: clamp(56px, 8vw, 88px) 0 24px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .extras {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    list-style: none;
+  }
+
+  .extra a {
+    position: relative;
+    display: block;
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    height: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-raised);
+    transition:
+      border-color 0.25s var(--ease),
+      transform 0.3s var(--ease);
+  }
+
+  .extra a:hover {
+    border-color: var(--accent);
+  }
+
+  /* Cursor-following glint over the card */
+  .extra a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      360px circle at var(--mx, 50%) var(--my, 0%),
+      color-mix(in oklab, var(--accent) 10%, transparent),
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+    pointer-events: none;
+  }
+
+  .extra a:hover::after {
+    opacity: 1;
+  }
+
+  .extra__img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    filter: grayscale(0.6) contrast(1.05);
+    transition:
+      filter 0.4s var(--ease),
+      scale 0.6s var(--ease);
+  }
+
+  .extra a:hover .extra__img {
+    filter: none;
+    scale: 1.04;
+  }
+
+  .extra__body {
+    padding: 22px 24px 24px;
+  }
+
+  h4 {
+    font-size: var(--fz-md);
+    margin-bottom: 8px;
+  }
+
+  .extra__body p:last-child {
+    margin: 0;
+    font-size: var(--fz-sm);
+  }
+
+  @media (max-width: 760px) {
+    .case__link {
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 28px 0;
+    }
+
+    .case__cta {
+      opacity: 1;
+      transform: none;
+    }
+
+    .extras {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

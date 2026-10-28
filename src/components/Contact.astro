@@ -1,0 +1,92 @@
+---
+import { site, socials } from '@/data/site';
+import type { Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = ui[Astro.props.lang];
+---
+
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <div class="container contact__inner">
+    <p class="eyebrow">{t.contact.eyebrow}</p>
+    <h2 id="contact-title">{t.contact.title}</h2>
+    <p class="contact__text">{t.contact.body}</p>
+    <div class="contact__actions">
+      <a class="btn btn--primary magnetic" href={`mailto:${site.email}`}>
+        {site.email}
+      </a>
+      {socials.map(s => (
+        <a class="btn" href={s.url} target="_blank" rel="noopener">
+          {s.name}
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+  }
+
+  /* Amber glow from below that drifts slowly side to side */
+  .contact::before {
+    content: '';
+    position: absolute;
+    inset: 0 -20%;
+    background: radial-gradient(
+      50% 80% at 50% 100%,
+      color-mix(in oklab, var(--accent) 11%, transparent),
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .contact::before {
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift {
+      from {
+        translate: -12% 0;
+      }
+      to {
+        translate: 12% 0;
+      }
+    }
+  }
+
+  .contact__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: var(--fz-2xl);
+    letter-spacing: -0.035em;
+  }
+
+  .contact__text {
+    max-width: 58ch;
+    margin: 24px 0 0;
+  }
+
+  .contact__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 36px;
+  }
+</style>

@@ -1,37 +1,13 @@
 {
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"],
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "es6"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
+    "jsxImportSource": "react",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@": ["src"],
-      "@config": ["src/config"],
-      "@config/*": ["src/config/*"],
-      "@components": ["src/components"],
-      "@components/*": ["src/components/*"],
-      "@styles": ["src/styles"],
-      "@styles/*": ["src/styles/*"],
-      "@utils": ["src/utils"],
-      "@utils/*": ["src/utils/*"],
-      "@hooks": ["src/hooks"],
-      "@hooks/*": ["src/hooks/*"],
-      "@images": ["src/images"],
-      "@images/*": ["src/images/*"]
+      "@/*": ["src/*"]
     }
-  },
-  "include": ["src/**/*", "gatsby-*.js", "gatsby-*.ts"],
-  "exclude": ["node_modules", "public", ".cache"]
+  }
 }

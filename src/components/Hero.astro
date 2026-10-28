@@ -1,0 +1,183 @@
+---
+import { getImage } from 'astro:assets';
+import portrait from '@/assets/me.jpeg';
+import HeroVisual from '@/components/hero/HeroVisual';
+import { site } from '@/data/site';
+import type { Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = ui[Astro.props.lang];
+const [a1, a2, a3] = t.hero.taglineUnderstand;
+const [b1, b2, b3] = t.hero.taglineBuild;
+
+const poster = await getImage({ src: portrait, width: 760, format: 'webp', quality: 78 });
+const sample = await getImage({ src: portrait, width: 200, format: 'webp', quality: 90 });
+---
+
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      <p class="hero__status enter" style="--i: 0">
+        <span class="dot" aria-hidden="true"></span>
+        {t.hero.availability} · {t.hero.location}
+      </p>
+      <h1 id="hero-title" class="enter" style="--i: 1">
+        {site.name}
+      </h1>
+      <p class="hero__role enter" style="--i: 2">
+        {t.meta.role}
+      </p>
+      <p class="hero__tagline enter" style="--i: 3">
+        {a1}
+        <em class="draw" style="--i: 3">
+          {a2}
+        </em>
+        {a3}
+        <br />
+        {b1}
+        <em class="draw" style="--i: 5">
+          {b2}
+        </em>
+        {b3}
+      </p>
+      <p class="hero__lede enter" style="--i: 4">
+        {t.hero.lede}
+      </p>
+      <div class="hero__actions enter" style="--i: 5">
+        <a class="btn btn--primary magnetic" href="#work">
+          {t.hero.cta}
+        </a>
+        <a class="btn magnetic" href={t.resumeUrl} target="_blank" rel="noopener">
+          {t.resumePdf}
+        </a>
+      </div>
+    </div>
+
+    <div class="hero__visual enter" style="--i: 2">
+      <HeroVisual
+        client:idle
+        poster={poster.src}
+        sample={sample.src}
+        labels={{
+          understand: t.hero.understand,
+          build: t.hero.build,
+          description: t.hero.visualLabel,
+        }}
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: clamp(32px, 6vw, 72px);
+    padding-bottom: clamp(48px, 7vw, 88px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(24px, 5vw, 72px);
+  }
+
+  .hero__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 6px 14px 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 60%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .dot {
+      animation: pulse 2.4s var(--ease) infinite;
+    }
+  }
+
+  @keyframes pulse {
+    70% {
+      box-shadow: 0 0 0 8px transparent;
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+
+  h1 {
+    font-size: var(--fz-2xl);
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .hero__role {
+    margin: 18px 0 0;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--fz-sm);
+  }
+
+  .hero__tagline {
+    margin: 28px 0 0;
+    color: var(--text);
+    font-size: var(--fz-xl);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .hero__tagline {
+    text-wrap: balance;
+  }
+
+  .hero__tagline em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero__lede {
+    max-width: 52ch;
+    margin: 20px 0 0;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .hero__visual {
+    max-width: 560px;
+    width: 100%;
+    justify-self: center;
+  }
+
+  @media (max-width: 900px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero__visual {
+      max-width: 420px;
+    }
+  }
+</style>

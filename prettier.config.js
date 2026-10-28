@@ -1,4 +1,5 @@
-module.exports = {
+/** @type {import('prettier').Config} */
+export default {
   printWidth: 100,
   tabWidth: 2,
   useTabs: false,
@@ -8,4 +9,6 @@ module.exports = {
   bracketSpacing: true,
   bracketSameLine: true,
   arrowParens: 'avoid',
+  plugins: ['prettier-plugin-astro'],
+  overrides: [{ files: '*.astro', options: { parser: 'astro' } }],
 };

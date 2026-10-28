@@ -1,0 +1,339 @@
+---
+import { render } from 'astro:content';
+import { getJobs } from '@/i18n';
+import type { Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const all = await getJobs(lang);
+const rendered = await Promise.all(
+  all.map(async job => ({ job, Content: (await render(job)).Content })),
+);
+const engineering = rendered.filter(r => r.job.data.track === 'engineering');
+const alongside = rendered.filter(r => r.job.data.track !== 'engineering');
+---
+
+<section id="experience" class="section experience" aria-labelledby="experience-title">
+  <div class="container">
+    <p class="eyebrow">{t.experience.eyebrow}</p>
+    <h2 id="experience-title" class="section-title">
+      {t.experience.title}
+    </h2>
+
+    <ol class="jobs">
+      {engineering.map(({ job, Content }) => (
+        <li class="job reveal">
+          <p class="job__range">{job.data.range}</p>
+          <div>
+            <h3>
+              {job.data.title}{' '}
+              <a class="job__company" href={job.data.url} target="_blank" rel="noopener">
+                @ {job.data.company}
+              </a>
+            </h3>
+            <p class="job__location">{job.data.location}</p>
+            <div class="job__body">
+              <Content />
+            </div>
+            {job.data.tech.length > 0 && (
+              <ul class="tags" aria-label={t.a11y.technologies}>
+                {job.data.tech.map(t => (
+                  <li>{t}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <h3 class="sub">{t.experience.alongside}</h3>
+    <ul class="alongside">
+      {alongside.map(({ job, Content }) => (
+        <li class="reveal">
+          <p class="job__range">{job.data.range}</p>
+          <h4>
+            {job.data.title} ·{' '}
+            {job.data.url ? (
+              <a href={job.data.url} target="_blank" rel="noopener">
+                {job.data.company}
+              </a>
+            ) : (
+              job.data.company
+            )}
+          </h4>
+          <div class="alongside__body">
+            <Content />
+          </div>
+        </li>
+      ))}
+      <li class="reveal">
+        <p class="job__range">2017 - 2022</p>
+        <h4>
+          {t.experience.degree} · {t.experience.school}
+        </h4>
+        <div class="alongside__body">
+          <p>{t.experience.degreeNote}</p>
+        </div>
+      </li>
+    </ul>
+
+    <p class="experience__more">
+      {t.experience.more[0]}
+      <a class="link" href={t.resumeUrl} target="_blank" rel="noopener">
+        {t.experience.more[1]}
+      </a>
+      {t.experience.more[2]}
+    </p>
+  </div>
+</section>
+
+<style>
+  .experience {
+    border-block: 1px solid var(--line);
+    background: var(--bg-sunken);
+  }
+
+  .jobs {
+    --rail: 196px; /* centered in the gap between the date column and the role */
+    position: relative;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Timeline rail: a hairline with an amber fill that follows the scroll, and a dot per role */
+  .jobs::before,
+  .jobs::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    bottom: 0;
+    left: var(--rail);
+    width: 1px;
+    background: var(--line);
+  }
+
+  .jobs::after {
+    background: linear-gradient(var(--accent), color-mix(in oklab, var(--accent) 20%, transparent));
+    transform: scaleY(0);
+    transform-origin: 50% 0;
+  }
+
+  .job {
+    position: relative;
+  }
+
+  .job::before {
+    content: '';
+    position: absolute;
+    top: 42px;
+    left: calc(var(--rail) - 4px);
+    z-index: 1;
+    width: 9px;
+    height: 9px;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--bg-sunken);
+  }
+
+  .job:first-child::before {
+    top: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .jobs::after {
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .jobs::after {
+        animation: rail linear both;
+        animation-timeline: --jobs;
+        animation-range: cover 20% cover 75%;
+      }
+
+      .jobs {
+        view-timeline: --jobs block;
+      }
+
+      .job::before {
+        animation: dot linear both;
+        animation-timeline: view();
+        animation-range: entry 100% cover 45%;
+      }
+
+      @keyframes rail {
+        to {
+          transform: scaleY(1);
+        }
+      }
+
+      @keyframes dot {
+        to {
+          border-color: var(--accent);
+          background: var(--accent);
+          box-shadow: 0 0 0 4px var(--accent-soft);
+        }
+      }
+    }
+  }
+
+  @supports not (animation-timeline: view()) {
+    .jobs::after {
+      transform: none;
+    }
+  }
+
+  .job {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 32px;
+    padding: 36px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .job:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .job__range {
+    margin: 4px 0 0;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    letter-spacing: 0.02em;
+  }
+
+  h3 {
+    font-size: var(--fz-lg);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .job__company {
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .job__company:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .job__location {
+    margin: 4px 0 16px;
+    color: var(--faint);
+    font-size: var(--fz-xs);
+  }
+
+  .job__body :global(ul) {
+    margin-bottom: 18px;
+    list-style: none;
+  }
+
+  .job__body :global(li) {
+    position: relative;
+    max-width: 72ch;
+    margin-bottom: 10px;
+    padding-left: 22px;
+    font-size: var(--fz-sm);
+  }
+
+  .job__body :global(li)::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.72em;
+    width: 8px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .sub {
+    margin: clamp(48px, 7vw, 72px) 0 24px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .alongside {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    list-style: none;
+  }
+
+  /* Hairlines between cells without filling empty grid tracks */
+  .alongside li {
+    padding: 22px 24px;
+    box-shadow: 0 0 0 0.5px var(--line);
+  }
+
+  .alongside .job__range {
+    margin: 0 0 8px;
+  }
+
+  h4 {
+    margin-bottom: 8px;
+    font-size: var(--fz-sm);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  h4 a {
+    color: var(--accent);
+  }
+
+  h4 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .alongside__body :global(p) {
+    margin: 0;
+    font-size: var(--fz-xs);
+    line-height: 1.55;
+  }
+
+  .experience__more {
+    max-width: 68ch;
+    margin: 40px 0 0;
+    font-size: var(--fz-sm);
+  }
+
+  @media (max-width: 760px) {
+    .jobs {
+      --rail: 0px;
+      padding-left: 24px;
+    }
+
+    .job {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .job::before {
+      top: 40px;
+      left: -28px; /* the rail sits in the list's left padding */
+    }
+
+    .job:first-child::before {
+      top: 4px;
+    }
+  }
+</style>
