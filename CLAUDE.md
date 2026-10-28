@@ -49,6 +49,8 @@ Node is pinned in `.nvmrc` (22.23.4; Astro 7 needs ≥22.23.4). Package manager 
   - A small module script sets `data-scene="on"` before the island loads, so the layout doesn't jump. Without the scene (no JS, reduced motion, weak device) the chapters render as a plain grid and the city note is hidden.
 - `src/styles/global.css` holds the design tokens (dark only, warm black + amber `#f5a524`, Geist + Geist Mono via Fontsource) and shared classes (`.container`, `.section`, `.eyebrow`, `.btn`, `.tags`, `.prose`, `.reveal`).
 - `.reveal` is a CSS-only scroll animation (`animation-timeline: view()`). It's progressive, and off under reduced motion.
+- Understand lens (header toggle, key `U`, `Esc` off): `src/scripts/lens.ts` + `src/styles/lens.css`. On first use it deep-clones `<main>` and the footer into an inert, aria-hidden overlay at the same document coordinates, clipped to a circle around the pointer (touch: drag the rim). The copy is restyled as a blueprint; labels come from `data-bp` attributes on component roots (code names, language-neutral), and it re-clones when `<main>` resizes.
+- Lens gotcha: an `<astro-island>` in the live DOM hydrates again. The clone is built in a detached document, and islands, images, and videos become sized boxes before it is adopted. Keep it that way.
 - Header memoji: `src/assets/memoji.png` is the still. The `.webm`/`.MOV` videos load only on hover (MOV for Safari, which lacks VP9 alpha).
 
 ## Conventions and gotchas

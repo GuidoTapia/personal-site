@@ -10,7 +10,11 @@ interface Props {
 const t = ui[Astro.props.lang];
 ---
 
-<section id="contact" class="section contact" aria-labelledby="contact-title">
+<section
+  id="contact"
+  class="section contact"
+  data-bp="Contact.astro · static HTML"
+  aria-labelledby="contact-title">
   <div class="container contact__inner">
     <p class="eyebrow">{t.contact.eyebrow}</p>
     <h2 id="contact-title">{t.contact.title}</h2>

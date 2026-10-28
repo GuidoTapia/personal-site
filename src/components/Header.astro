@@ -38,6 +38,28 @@ const switcher = (Object.keys(languages) as Lang[]).map(l => ({
           </li>
         ))}
       </ul>
+      <!-- Understand lens toggle (src/scripts/lens.ts). Hidden until the script runs. -->
+      <button
+        type="button"
+        class="lens-toggle"
+        data-lens-toggle
+        data-drag={t.lens.drag}
+        aria-pressed="false"
+        title={t.lens.hint}
+        hidden>
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+          <circle
+            cx="8"
+            cy="8"
+            r="6.25"
+            fill="none"
+            stroke="currentColor"
+            stroke-dasharray="2 1.6"
+          />
+          <path d="M8 1.75a6.25 6.25 0 0 1 0 12.5Z" fill="currentColor" />
+        </svg>
+        <span class="lens-toggle__label">{t.lens.label}</span>
+      </button>
       <ul class="lang" aria-label={t.a11y.language}>
         {switcher.map(s => (
           <li>
@@ -249,6 +271,41 @@ const switcher = (Object.keys(languages) as Lang[]).map(l => ({
     color: var(--accent);
   }
 
+  .lens-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 32px;
+    padding: 0 12px 0 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: none;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition:
+      color 0.2s var(--ease),
+      border-color 0.2s var(--ease),
+      background-color 0.2s var(--ease);
+  }
+
+  .lens-toggle[hidden] {
+    display: none;
+  }
+
+  .lens-toggle:hover {
+    border-color: var(--line-strong);
+    color: var(--text);
+  }
+
+  .lens-toggle[aria-pressed='true'] {
+    border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
   .nav__resume {
     min-height: 36px;
     padding: 0 16px;
@@ -328,6 +385,23 @@ const switcher = (Object.keys(languages) as Lang[]).map(l => ({
 
     .nav {
       gap: 12px;
+    }
+
+    /* Icon only on small screens; the label stays as the accessible name */
+    .lens-toggle {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      justify-content: center;
+    }
+
+    .lens-toggle__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
     }
   }
 </style>
