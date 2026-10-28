@@ -1,5 +1,9 @@
 ---
 import { site } from '@/data/site';
+import { langFromUrl } from '@/i18n';
+import { ui } from '@/i18n/ui';
+
+const t = ui[langFromUrl(Astro.url)];
 
 const year = new Date().getFullYear();
 ---
@@ -10,9 +14,9 @@ const year = new Date().getFullYear();
       © {year} {site.name}
     </p>
     <p>
-      Designed and built with Astro and React Three Fiber.
+      {t.footer.built}
       <a class="link" href={site.repo} target="_blank" rel="noopener">
-        View source
+        {t.footer.source}
       </a>
     </p>
   </div>

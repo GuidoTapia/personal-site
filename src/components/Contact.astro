@@ -1,16 +1,20 @@
 ---
 import { site, socials } from '@/data/site';
+import type { Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = ui[Astro.props.lang];
 ---
 
 <section id="contact" class="section contact" aria-labelledby="contact-title">
   <div class="container contact__inner">
-    <p class="eyebrow">04 · Contact</p>
-    <h2 id="contact-title">Let’s talk.</h2>
-    <p class="contact__text">
-      I’m open to remote roles in full-stack engineering, technical leadership, and solutions
-      advisory. Whether you have a role in mind, a codebase you want a second opinion on, or just
-      want to say hi, my inbox is open and I’ll get back to you.
-    </p>
+    <p class="eyebrow">{t.contact.eyebrow}</p>
+    <h2 id="contact-title">{t.contact.title}</h2>
+    <p class="contact__text">{t.contact.body}</p>
     <div class="contact__actions">
       <a class="btn btn--primary" href={`mailto:${site.email}`}>
         {site.email}

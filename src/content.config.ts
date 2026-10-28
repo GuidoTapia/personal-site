@@ -2,28 +2,35 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-// One markdown file per role. The body is the bullet list shown under the role.
+// One markdown file per role and language (`en/<role>.md`, `es/<role>.md`); ids look like `en/ravn`.
+// The body is the bullet list shown under the role.
 const jobs = defineCollection({
-  loader: glob({ pattern: '*.md', base: './src/content/jobs' }),
+  loader: glob({ pattern: '{en,es}/*.md', base: './src/content/jobs' }),
   schema: z.object({
     date: z.coerce.date(), // start date; roles are listed newest first
     title: z.string(),
     company: z.string(),
     location: z.string(),
     range: z.string(),
-    url: z.url(),
+    url: z.url().optional(),
+    // `teaching` and `community` roles render as a compact list under the engineering roles
+    track: z.enum(['engineering', 'teaching', 'community']).default('engineering'),
     tech: z.array(z.string()).default([]),
   }),
 });
 
-// One folder per piece of work (`<slug>/index.md` plus optional images). Each entry gets a card on
-// the homepage and its own page at /work/<slug>. Entries can later come from other repos by
-// swapping or adding a loader here; pages only depend on this schema.
+// One folder per piece of work (`<slug>/index.md`, an optional `index.es.md`, plus images). Each
+// entry gets a card on the homepage and its own page at /work/<slug> (or /es/work/<slug>); ids look
+// like `en/<slug>`. Entries can later come from other repos by swapping or adding a loader here;
+// pages only depend on this schema.
 const work = defineCollection({
   loader: glob({
-    pattern: '*/index.md',
+    pattern: '*/index{,.es}.md',
     base: './src/content/work',
-    generateId: ({ entry }) => entry.split('/')[0],
+    generateId: ({ entry }) => {
+      const [slug, file] = entry.split('/');
+      return `${file === 'index.es.md' ? 'es' : 'en'}/${slug}`;
+    },
   }),
   schema: ({ image }) =>
     z.object({

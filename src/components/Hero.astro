@@ -2,7 +2,17 @@
 import { getImage } from 'astro:assets';
 import portrait from '@/assets/me.jpeg';
 import HeroVisual from '@/components/hero/HeroVisual';
-import { highlights, site } from '@/data/site';
+import { site } from '@/data/site';
+import type { Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = ui[Astro.props.lang];
+const [a1, a2, a3] = t.hero.taglineAudit;
+const [b1, b2, b3] = t.hero.taglineBuild;
 
 const poster = await getImage({ src: portrait, width: 760, format: 'webp', quality: 78 });
 const sample = await getImage({ src: portrait, width: 200, format: 'webp', quality: 90 });
@@ -13,48 +23,38 @@ const sample = await getImage({ src: portrait, width: 200, format: 'webp', quali
     <div class="hero__copy">
       <p class="hero__status">
         <span class="dot" aria-hidden="true"></span>
-        {site.availability} · {site.location}
+        {t.hero.availability} · {t.hero.location}
       </p>
       <h1 id="hero-title">{site.name}</h1>
-      <p class="hero__role">{site.role}</p>
+      <p class="hero__role">{t.meta.role}</p>
       <p class="hero__tagline">
-        I <em>audit</em> the code.
+        {a1}
+        <em>{a2}</em>
+        {a3}
         <br />
-        Then I help <em>build</em> what comes next.
+        {b1}
+        <em>{b2}</em>
+        {b3}
       </p>
-      <p class="hero__lede">
-        At{' '}
-        <a class="link" href="https://designli.co/">
-          Designli
-        </a>{' '}
-        I read prospective clients’ codebases and write the proposals that turn them into projects.
-        Before that, I spent over four years shipping React, Node.js, and React Native products for
-        clients in the US and Europe.
-      </p>
+      <p class="hero__lede">{t.hero.lede}</p>
       <div class="hero__actions">
         <a class="btn btn--primary" href="#work">
-          See the work
+          {t.hero.cta}
         </a>
         <a class="btn" href={site.resume} target="_blank" rel="noopener">
-          Resume (PDF)
+          {t.resumePdf}
         </a>
       </div>
     </div>
 
     <div class="hero__visual">
-      <HeroVisual client:idle poster={poster.src} sample={sample.src} />
+      <HeroVisual
+        client:idle
+        poster={poster.src}
+        sample={sample.src}
+        labels={{ audit: t.hero.audit, build: t.hero.build, description: t.hero.visualLabel }}
+      />
     </div>
-  </div>
-
-  <div class="container">
-    <ul class="highlights" aria-label="Highlights">
-      {highlights.map(h => (
-        <li>
-          <strong>{h.value}</strong>
-          <span>{h.label}</span>
-        </li>
-      ))}
-    </ul>
   </div>
 </section>
 
@@ -157,38 +157,6 @@ const sample = await getImage({ src: portrait, width: 200, format: 'webp', quali
     justify-self: center;
   }
 
-  .highlights {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1px;
-    margin-top: clamp(40px, 6vw, 72px);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--line);
-    overflow: hidden;
-    list-style: none;
-  }
-
-  .highlights li {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 20px 22px;
-    background: var(--bg);
-  }
-
-  .highlights strong {
-    color: var(--text);
-    font-size: var(--fz-lg);
-    font-weight: 650;
-    letter-spacing: -0.01em;
-  }
-
-  .highlights span {
-    font-size: var(--fz-xs);
-    line-height: 1.45;
-  }
-
   @media (max-width: 900px) {
     .hero__grid {
       grid-template-columns: 1fr;
@@ -196,10 +164,6 @@ const sample = await getImage({ src: portrait, width: 200, format: 'webp', quali
 
     .hero__visual {
       max-width: 420px;
-    }
-
-    .highlights {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 </style>

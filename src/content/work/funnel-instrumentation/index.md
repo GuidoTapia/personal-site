@@ -3,7 +3,7 @@ title: 'Finding the leak in a real-estate funnel'
 summary: 'Instrumented two critical funnels on a DIY real-estate platform, found a blocker hiding at the end of the flow, and redesigned the worst step.'
 kind: 'case-study'
 role: 'Software Engineer, RAVN Development'
-period: 'RAVN Development'
+period: 'At RAVN, 2021 - 2025'
 order: 3
 tech:
   - 'Event instrumentation'

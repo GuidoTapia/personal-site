@@ -26,10 +26,17 @@ Node is pinned in `.nvmrc` (22.23.4; Astro 7 needs ≥22.23.4). Package manager 
 
 - Pages render to static HTML. Everything except the hero visual is zero-JS Astro. Content must stay readable without JavaScript.
 - `src/content.config.ts` defines two collections (Zod schemas):
-  - `jobs`: `src/content/jobs/*.md`. Frontmatter: `date` (start, sorted newest first), `title`, `company`, `location`, `range`, `url`, `tech[]`. The body is the bullet list.
-  - `work`: `src/content/work/<slug>/index.md` plus images. `kind` is `case-study` (listed with numbers) or `achievement` (card with a cover). `order` sorts. `metrics[]`, `links[]`, and an optional `cover` + `coverAlt`. Each entry gets `/work/<slug>/`.
+  - `jobs`: `src/content/jobs/{en,es}/<role>.md` (ids like `en/ravn`). Frontmatter: `date` (start, sorted newest first), `title`, `company`, `location`, `range`, `url` (optional), `track` (`engineering` by default; `teaching` and `community` render in the compact "Alongside the engineering" grid), `tech[]`. The body is the bullet list.
+  - `work`: `src/content/work/<slug>/index.md`, its Spanish twin `index.es.md`, plus images (ids like `es/<slug>`). `kind` is `case-study` (numbered list) or `achievement` (card with a cover). `order` sorts. `metrics[]` show only on the case-study page, not the homepage. `links[]`, and an optional `cover` + `coverAlt`. Each entry gets `/work/<slug>/` and `/es/work/<slug>/`.
   - To pull projects from other repos later, add a loader in `content.config.ts`. Pages only depend on the schema.
-- `src/data/site.ts`: name, role, email, socials, nav, hero highlights, and skills. Every number in `highlights` must trace back to the career doc.
+- `src/data/site.ts`: language-neutral data (name, email, socials, resume, skills).
+- **i18n (English at `/`, Spanish at `/es/`):**
+  - `src/i18n/ui.ts` holds every UI string for both languages; the `satisfies` check fails the build if a key is missing in one.
+  - `src/i18n/index.ts` has `langFromUrl`, `localePath`, `translatePath`, and `getWork` / `getJobs`, which fall back to English for entries with no translation.
+  - `src/views/Home.astro` and `src/views/WorkEntry.astro` render both languages; `src/pages/` and `src/pages/es/` are thin wrappers. Section components take a `lang` prop.
+  - The header EN/ES switch links to the same page in the other language. Base emits `hreflang` alternates and `og:locale`; the sitemap pairs the pages.
+  - A new page or entry needs both languages. Spanish copy follows the MCD Spanish rules (first person implicit verbs, Peru-market anglicism list).
+  - `resume.pdf` is English only; the Spanish button says so.
 - `src/components/hero/`, the Audit / Build hero:
   - `HeroVisual.tsx` (island, `client:idle`) renders the CSS poster: the same portrait as two layers split by `--split`. It drives `--split` from the pointer, or a slow idle sweep. It loads `HeroScene` lazily, only if the device passes `canRunScene()`: no reduced motion, no data saver, ≥4 cores, ≥4 GB memory, WebGL2.
   - `HeroScene.tsx` samples `src/assets/me.jpeg` (200px webp) into points by luminance. One custom shader draws the left of the split as a gridded wireframe with a scanline (audit) and the right as amber relief dots (build). The camera is orthographic, so screen x maps linearly to world x. Rendering pauses when the hero is offscreen.

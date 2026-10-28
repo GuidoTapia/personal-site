@@ -1,38 +1,32 @@
 ---
 import { skills } from '@/data/site';
+import type { Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = ui[Astro.props.lang];
 ---
 
 <section id="about" class="section" aria-labelledby="about-title">
   <div class="container about">
     <div>
-      <p class="eyebrow">03 · About</p>
+      <p class="eyebrow">{t.about.eyebrow}</p>
       <h2 id="about-title" class="section-title">
-        The short version.
+        {t.about.title}
       </h2>
       <div class="about__text">
-        <p>
-          Hey there, I’m Guido. I build full-stack web and mobile apps, but my real specialty is
-          making sure no one makes them crash right before the demo. These days that instinct is my
-          job: I read other teams’ codebases, find what will break, and explain it in terms a
-          founder can act on.
-        </p>
-        <p>
-          I started in hardware. I built school automation and smart waste-monitoring devices in
-          Arequipa, and led the team that won the RoboCup Junior Soccer world championship in 2017.
-          Then I spent over four years at RAVN, where I grew from trainee to software engineer, led
-          teams of 2 to 10 developers, and cut onboarding for new hires from three months to one.
-        </p>
-        <p>
-          I work in Spanish and English, with intermediate-advanced French, remotely with teams in
-          the US and Europe. When I’m not doing any of that, I’m occasionally using my free time to
-          compose the next summer hit.
-        </p>
+        {t.about.body.map(p => (
+          <p>{p}</p>
+        ))}
       </div>
     </div>
 
-    <aside class="skills" aria-label="Skills">
+    <aside class="skills" aria-label={t.a11y.skills}>
       <div>
-        <h3>I ship with</h3>
+        <h3>{t.about.ship}</h3>
         <ul class="tags">
           {skills.ship.map(s => (
             <li>{s}</li>
@@ -40,16 +34,13 @@ import { skills } from '@/data/site';
         </ul>
       </div>
       <div>
-        <h3>I review and audit</h3>
+        <h3>{t.about.review}</h3>
         <ul class="tags tags--quiet">
           {skills.review.map(s => (
             <li>{s}</li>
           ))}
         </ul>
-        <p class="skills__note">
-          Languages I read and reason about in client audits, alongside everything in the list
-          above.
-        </p>
+        <p class="skills__note">{t.about.reviewNote}</p>
       </div>
     </aside>
   </div>

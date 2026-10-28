@@ -7,6 +7,7 @@ const HeroScene = lazy(() => import('./HeroScene'));
 interface Props {
   poster: string; // portrait used by the CSS fallback
   sample: string; // small portrait the particle scene samples brightness from
+  labels: { audit: string; build: string; description: string };
 }
 
 const DEFAULT_SPLIT = 0.55;
@@ -33,7 +34,7 @@ function canRunScene(): boolean {
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
-export default function HeroVisual({ poster, sample }: Props) {
+export default function HeroVisual({ poster, sample, labels }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   // Current split position (0 = all build, 1 = all audit), shared with the scene without re-renders.
   const splitRef = useRef(DEFAULT_SPLIT);
@@ -108,7 +109,7 @@ export default function HeroVisual({ poster, sample }: Props) {
       ref={rootRef}
       className={`hv${sceneReady ? ' is-live' : ''}`}
       role="img"
-      aria-label="Portrait of Guido Tapia Oré, split into an audit view and a build view">
+      aria-label={labels.description}>
       <div className="hv__poster" aria-hidden="true">
         <div className="hv__build">
           <img src={poster} alt="" width={760} height={760} />
@@ -132,10 +133,10 @@ export default function HeroVisual({ poster, sample }: Props) {
 
       <span className="hv__line" aria-hidden="true" />
       <span className="hv__label hv__label--audit" aria-hidden="true">
-        Audit
+        {labels.audit}
       </span>
       <span className="hv__label hv__label--build" aria-hidden="true">
-        Build
+        {labels.build}
       </span>
     </div>
   );

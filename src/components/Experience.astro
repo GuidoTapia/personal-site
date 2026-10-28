@@ -1,23 +1,33 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
+import { getJobs } from '@/i18n';
+import type { Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
 
-const jobs = (await getCollection('jobs')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const all = await getJobs(lang);
 const rendered = await Promise.all(
-  jobs.map(async job => ({ job, Content: (await render(job)).Content })),
+  all.map(async job => ({ job, Content: (await render(job)).Content })),
 );
+const engineering = rendered.filter(r => r.job.data.track === 'engineering');
+const alongside = rendered.filter(r => r.job.data.track !== 'engineering');
 ---
 
 <section id="experience" class="section experience" aria-labelledby="experience-title">
   <div class="container">
-    <p class="eyebrow">02 · Experience</p>
+    <p class="eyebrow">{t.experience.eyebrow}</p>
     <h2 id="experience-title" class="section-title">
-      Where I’ve worked.
+      {t.experience.title}
     </h2>
 
     <ol class="jobs">
-      {rendered.map(({ job, Content }) => (
+      {engineering.map(({ job, Content }) => (
         <li class="job reveal">
           <p class="job__range">{job.data.range}</p>
           <div>
@@ -32,7 +42,7 @@ const rendered = await Promise.all(
               <Content />
             </div>
             {job.data.tech.length > 0 && (
-              <ul class="tags" aria-label="Technologies">
+              <ul class="tags" aria-label={t.a11y.technologies}>
                 {job.data.tech.map(t => (
                   <li>{t}</li>
                 ))}
@@ -43,13 +53,43 @@ const rendered = await Promise.all(
       ))}
     </ol>
 
+    <h3 class="sub">{t.experience.alongside}</h3>
+    <ul class="alongside">
+      {alongside.map(({ job, Content }) => (
+        <li class="reveal">
+          <p class="job__range">{job.data.range}</p>
+          <h4>
+            {job.data.title} ·{' '}
+            {job.data.url ? (
+              <a href={job.data.url} target="_blank" rel="noopener">
+                {job.data.company}
+              </a>
+            ) : (
+              job.data.company
+            )}
+          </h4>
+          <div class="alongside__body">
+            <Content />
+          </div>
+        </li>
+      ))}
+      <li class="reveal">
+        <p class="job__range">2017 - 2022</p>
+        <h4>
+          {t.experience.degree} · {t.experience.school}
+        </h4>
+        <div class="alongside__body">
+          <p>{t.experience.degreeNote}</p>
+        </div>
+      </li>
+    </ul>
+
     <p class="experience__more">
-      I also taught IT and robotics at Universidad Católica San Pablo, CEPROTEC, and a secondary
-      school between 2018 and 2021. The full history is in my{' '}
+      {t.experience.more[0]}
       <a class="link" href="/resume.pdf" target="_blank" rel="noopener">
-        resume
+        {t.experience.more[1]}
       </a>
-      .
+      {t.experience.more[2]}
     </p>
   </div>
 </section>
@@ -130,6 +170,57 @@ const rendered = await Promise.all(
     width: 8px;
     height: 1px;
     background: var(--accent);
+  }
+
+  .sub {
+    margin: clamp(48px, 7vw, 72px) 0 24px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .alongside {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    list-style: none;
+  }
+
+  /* Hairlines between cells without filling empty grid tracks */
+  .alongside li {
+    padding: 22px 24px;
+    box-shadow: 0 0 0 0.5px var(--line);
+  }
+
+  .alongside .job__range {
+    margin: 0 0 8px;
+  }
+
+  h4 {
+    margin-bottom: 8px;
+    font-size: var(--fz-sm);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  h4 a {
+    color: var(--accent);
+  }
+
+  h4 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .alongside__body :global(p) {
+    margin: 0;
+    font-size: var(--fz-xs);
+    line-height: 1.55;
   }
 
   .experience__more {

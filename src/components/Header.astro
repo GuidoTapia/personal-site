@@ -1,12 +1,27 @@
 ---
 import { Image } from 'astro:assets';
 import memoji from '@/assets/memoji.png';
-import { nav, site } from '@/data/site';
+import { site } from '@/data/site';
+import { langFromUrl, languages, localePath, translatePath, type Lang } from '@/i18n';
+import { ui } from '@/i18n/ui';
+
+const lang = langFromUrl(Astro.url);
+const t = ui[lang];
+const home = localePath(lang, '/');
+const nav = (['work', 'experience', 'about', 'contact'] as const).map(id => ({
+  label: t.nav[id],
+  href: `${home}#${id}`,
+}));
+const switcher = (Object.keys(languages) as Lang[]).map(l => ({
+  lang: l,
+  href: translatePath(Astro.url, l),
+  current: l === lang,
+}));
 ---
 
 <header class="header">
   <div class="container header__inner">
-    <a class="brand" href="/" aria-label={`${site.name}, home`}>
+    <a class="brand" href={home} aria-label={`${site.name}, ${t.a11y.home}`}>
       <span class="brand__avatar" data-memoji>
         <Image src={memoji} alt="" width={72} height={72} loading="eager" />
         <!-- Animated memoji, fetched only on hover: HEVC with alpha for Safari, VP9 with alpha elsewhere -->
@@ -15,7 +30,7 @@ import { nav, site } from '@/data/site';
       <span class="brand__name">{site.shortName}</span>
     </a>
 
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav" aria-label={t.a11y.primaryNav}>
       <ul class="nav__links">
         {nav.map(item => (
           <li>
@@ -23,12 +38,26 @@ import { nav, site } from '@/data/site';
           </li>
         ))}
       </ul>
+      <ul class="lang" aria-label={t.a11y.language}>
+        {switcher.map(s => (
+          <li>
+            <a
+              href={s.href}
+              hreflang={s.lang}
+              lang={s.lang}
+              aria-current={s.current ? 'true' : undefined}
+              title={languages[s.lang]}>
+              {s.lang.toUpperCase()}
+            </a>
+          </li>
+        ))}
+      </ul>
       <a class="btn nav__resume" href={site.resume} target="_blank" rel="noopener">
-        Resume
+        {t.resume}
       </a>
 
       <details class="menu">
-        <summary aria-label="Open menu">
+        <summary aria-label={t.a11y.openMenu}>
           <span></span>
           <span></span>
         </summary>
@@ -40,7 +69,7 @@ import { nav, site } from '@/data/site';
           ))}
           <li>
             <a href={site.resume} target="_blank" rel="noopener">
-              Resume
+              {t.resume}
             </a>
           </li>
         </ul>
@@ -156,6 +185,36 @@ import { nav, site } from '@/data/site';
     color: var(--accent);
   }
 
+  .lang {
+    display: flex;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    list-style: none;
+  }
+
+  .lang a {
+    display: block;
+    padding: 4px 9px;
+    border-radius: 999px;
+    color: var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    transition:
+      color 0.2s var(--ease),
+      background-color 0.2s var(--ease);
+  }
+
+  .lang a:hover {
+    color: var(--text);
+  }
+
+  .lang a[aria-current] {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
   .nav__resume {
     min-height: 36px;
     padding: 0 16px;
@@ -231,6 +290,10 @@ import { nav, site } from '@/data/site';
 
     .menu {
       display: block;
+    }
+
+    .nav {
+      gap: 12px;
     }
   }
 </style>
