@@ -18,8 +18,8 @@ const cityNote = t.story.cityNote.replace('{files}', String(city.files));
 
 <!--
   "How I got here": the hero's particles re-form into one shape per chapter as you scroll
-  (robot, chip, a bar of music, this site's own codebase as a city, a board game, the face
-  rebuilt). Without the WebGL
+  (robot, chip, blackboard, phone, this site's own codebase as a city, a bar of music, a board
+  game, the face rebuilt). Without the WebGL
   scene the chapters render as a plain list, so the content never depends on it.
 -->
 <section
@@ -41,7 +41,7 @@ const cityNote = t.story.cityNote.replace('{files}', String(city.files));
               <p class="story__kicker">{step.kicker}</p>
               <h3>{step.title}</h3>
               <p>{step.body}</p>
-              {i === 3 && city.files > 0 && <p class="story__note">{cityNote}</p>}
+              {i === 4 && city.files > 0 && <p class="story__note">{cityNote}</p>}
             </li>
           ))}
         </ol>
@@ -52,7 +52,7 @@ const cityNote = t.story.cityNote.replace('{files}', String(city.files));
         aria-hidden="true"
         data-bp="StoryVisual.tsx · React island, client:visible"
         data-bp-island="StoryScene.tsx · three.js, lazy, gated"
-        data-bp-note="WebGL canvas · six shapes, one shader">
+        data-bp-note="WebGL canvas · eight shapes, one shader">
         <StoryVisual client:visible sample={sample.src} buildings={city.buildings} />
       </div>
     </div>
@@ -147,7 +147,9 @@ const cityNote = t.story.cityNote.replace('{files}', String(city.files));
   [data-scene='on'][data-at='3'] .story__step[data-step='3'],
   [data-scene='on'][data-at='4'] .story__step[data-step='4'],
   [data-scene='on'][data-at='5'] .story__step[data-step='5'],
-  [data-scene='on'][data-at='6'] .story__step[data-step='6'] {
+  [data-scene='on'][data-at='6'] .story__step[data-step='6'],
+  [data-scene='on'][data-at='7'] .story__step[data-step='7'],
+  [data-scene='on'][data-at='8'] .story__step[data-step='8'] {
     opacity: 1;
   }
 

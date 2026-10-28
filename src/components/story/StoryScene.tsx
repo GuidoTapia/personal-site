@@ -3,7 +3,16 @@ import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import * as THREE from 'three';
 import { samplePortrait } from '@/components/hero/portrait';
 import type { Building } from '@/lib/codeCity';
-import { boardCloud, chipCloud, cityCloud, faceCloud, robotCloud, scoreCloud } from './shapes';
+import {
+  boardCloud,
+  blackboardCloud,
+  chipCloud,
+  cityCloud,
+  faceCloud,
+  phoneCloud,
+  robotCloud,
+  scoreCloud,
+} from './shapes';
 
 interface Props {
   sample: string;
@@ -188,8 +197,10 @@ export default function StoryScene({ sample, buildings, progressRef, active, onR
             faceCloud(portrait, n, true),
             robotCloud(n),
             chipCloud(n),
-            scoreCloud(n),
+            blackboardCloud(n),
+            phoneCloud(n),
             cityCloud(n, buildings),
+            scoreCloud(n),
             boardCloud(n),
           ],
           rand,

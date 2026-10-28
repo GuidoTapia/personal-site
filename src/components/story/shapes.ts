@@ -420,3 +420,172 @@ export function boardCloud(n: number): Cloud {
     ],
   ]);
 }
+
+// A phone, standing up and turned a little: wireframe body, feed cards on the screen, and five
+// amber stars above it (the app rescued from a 1-star rating).
+export function phoneCloud(n: number): Cloud {
+  const [hw, hh, depth] = [0.36, 0.72, 0.06];
+  const cy = -0.12;
+  const star = (k: number, t: number) => {
+    // a five-pointed star outline, walked by t in [0, 1)
+    const seg = Math.floor(t * 10);
+    const f = t * 10 - seg;
+    const pt = (i: number) => {
+      const a = Math.PI / 2 + (i * Math.PI) / 5;
+      const rad = i % 2 === 0 ? 0.085 : 0.036;
+      return [Math.cos(a) * rad, Math.sin(a) * rad];
+    };
+    const [ax, ay] = pt(seg);
+    const [bx, by] = pt(seg + 1);
+    return [(k - 2) * 0.2 + ax + (bx - ax) * f, cy + hh + 0.2 + ay + (by - ay) * f];
+  };
+  return build(n, 67, [
+    // body outline, front and back, with rounded corners
+    [
+      30,
+      (r, e) => {
+        const t = r() * 4;
+        const side = Math.floor(t);
+        const f = t - side;
+        let [x, y] = [
+          [-hw + f * 2 * hw, -hh],
+          [hw, -hh + f * 2 * hh],
+          [hw - f * 2 * hw, hh],
+          [-hw, hh - f * 2 * hh],
+        ][side];
+        const rc = 0.08;
+        const ex = Math.abs(x) - (hw - rc);
+        const ey = Math.abs(y) - (hh - rc);
+        if (ex > 0 && ey > 0) {
+          const a = Math.atan2(ey, ex);
+          x = Math.sign(x) * (hw - rc + Math.cos(a) * rc);
+          y = Math.sign(y) * (hh - rc + Math.sin(a) * rc);
+        }
+        e(x, cy + y, r() < 0.65 ? depth : -depth, 0);
+      },
+    ],
+    // feed cards on the screen
+    [
+      24,
+      (r, e) => {
+        const card = Math.floor(r() * 4);
+        const top = hh - 0.14 - card * 0.32;
+        const t = r();
+        const kind = r();
+        let x;
+        let y;
+        if (kind < 0.6) {
+          // card outline
+          const s = Math.floor(t * 4);
+          const f = t * 4 - s;
+          [x, y] = [
+            [-0.28 + f * 0.56, top],
+            [0.28, top - f * 0.24],
+            [0.28 - f * 0.56, top - 0.24],
+            [-0.28, top - 0.24 + f * 0.24],
+          ][s];
+        } else {
+          // two lines of "text"
+          x = -0.2 + t * (kind < 0.8 ? 0.4 : 0.25);
+          y = top - (kind < 0.8 ? 0.08 : 0.15);
+        }
+        e(x, cy + y, depth + 0.005, 0);
+      },
+    ],
+    // avatar dots on each card
+    [
+      8,
+      (r, e) => {
+        const card = Math.floor(r() * 4);
+        const a = r() * TAU;
+        const rad = Math.sqrt(r()) * 0.035;
+        e(
+          -0.235 + Math.cos(a) * rad,
+          cy + hh - 0.22 - card * 0.32 + Math.sin(a) * rad,
+          depth + 0.01,
+          1,
+        );
+      },
+    ],
+    // five stars above the phone
+    [
+      20,
+      (r, e) => {
+        const [x, y] = star(Math.floor(r() * 5), r());
+        e(x, y, depth + 0.1, 1);
+      },
+    ],
+  ]);
+}
+
+// A blackboard: wireframe frame and chalk lines, with an amber diagram (nodes and the edges
+// between them), the kind you draw when explaining how a robot decides where to go.
+export function blackboardCloud(n: number): Cloud {
+  const [hw, hh] = [0.95, 0.55];
+  const nodes: [number, number][] = [
+    [0.1, 0.3],
+    [-0.15, 0.02],
+    [0.38, 0.05],
+    [-0.32, -0.28],
+    [0.05, -0.3],
+    [0.58, -0.26],
+  ];
+  const edges: [number, number][] = [
+    [0, 1],
+    [0, 2],
+    [1, 3],
+    [1, 4],
+    [2, 5],
+    [2, 4],
+  ];
+  return build(n, 79, [
+    // frame
+    [
+      22,
+      (r, e) => {
+        const t = r() * 4;
+        const s = Math.floor(t);
+        const f = t - s;
+        const [x, y] = [
+          [-hw + f * 2 * hw, -hh],
+          [hw, -hh + f * 2 * hh],
+          [hw - f * 2 * hw, hh],
+          [-hw, hh - f * 2 * hh],
+        ][s];
+        e(x, y, r() * 0.04, 0);
+      },
+    ],
+    // chalk "notes" down the left side
+    [
+      12,
+      (r, e) => {
+        const line = Math.floor(r() * 5);
+        e(-0.82 + r() * (0.32 - (line % 2) * 0.1), 0.36 - line * 0.16, 0.01, 0);
+      },
+    ],
+    // edges of the diagram
+    [
+      22,
+      (r, e) => {
+        const [a, b] = edges[Math.floor(r() * edges.length)];
+        const t = r();
+        e(
+          nodes[a][0] + (nodes[b][0] - nodes[a][0]) * t,
+          nodes[a][1] + (nodes[b][1] - nodes[a][1]) * t,
+          0.01,
+          0,
+        );
+      },
+    ],
+    // nodes, as amber rings with a filled center
+    [
+      26,
+      (r, e) => {
+        const [x, y] = nodes[Math.floor(r() * nodes.length)];
+        const a = r() * TAU;
+        const rad = r() < 0.6 ? 0.075 : Math.sqrt(r()) * 0.04;
+        e(x + Math.cos(a) * rad, y + Math.sin(a) * rad, 0.015, 1);
+      },
+    ],
+  ]);
+}
