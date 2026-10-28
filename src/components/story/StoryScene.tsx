@@ -3,26 +3,25 @@ import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import * as THREE from 'three';
 import { samplePortrait } from '@/components/hero/portrait';
 import type { Building } from '@/lib/codeCity';
-import { chipCloud, cityCloud, faceCloud, robotCloud } from './shapes';
+import { boardCloud, chipCloud, cityCloud, faceCloud, robotCloud, scoreCloud } from './shapes';
 
 interface Props {
   sample: string;
   buildings: Building[];
-  progressRef: RefObject<number>; // 0 = face, 1 robot, 2 chip, 3 city, 4 face rebuilt
+  progressRef: RefObject<number>; // 0 = face, then one step per chapter, ending on the face rebuilt
   active: boolean;
   onReady: () => void;
 }
 
-const vertexShader = /* glsl */ `
+// One vec4 attribute per chapter shape (xyz + heat). The chapter after the last one reuses the
+// face, fully amber: same pieces, rebuilt.
+const vertexShader = (count: number) => /* glsl */ `
   uniform float uProgress;
   uniform float uTime;
   uniform float uSize;
   uniform float uPixelRatio;
   uniform float uScan;
-  attribute vec4 aT0;
-  attribute vec4 aT1;
-  attribute vec4 aT2;
-  attribute vec4 aT3;
+  ${Array.from({ length: count }, (_, i) => `attribute vec4 aT${i};`).join('\n  ')}
   attribute float aRand;
   varying float vHeat;
   varying float vScan;
@@ -30,13 +29,17 @@ const vertexShader = /* glsl */ `
 
   vec3 ease(vec3 a, vec3 b, float t) { return mix(a, b, t * t * (3.0 - 2.0 * t)); }
 
+  vec4 target(float i) {
+    ${Array.from({ length: count }, (_, i) => `if (i < ${i}.5) return aT${i};`).join('\n    ')}
+    return vec4(aT0.xyz, 1.0);
+  }
+
   void main() {
-    // Pick the two chapters around the scroll position. The final chapter reuses the face,
-    // fully amber: same pieces, rebuilt.
-    float seg = clamp(floor(uProgress), 0.0, 3.0);
+    // Pick the two chapters around the scroll position.
+    float seg = clamp(floor(uProgress), 0.0, ${count - 1}.0);
     float f = clamp(uProgress - seg, 0.0, 1.0);
-    vec4 a = seg < 0.5 ? aT0 : seg < 1.5 ? aT1 : seg < 2.5 ? aT2 : aT3;
-    vec4 b = seg < 0.5 ? aT1 : seg < 1.5 ? aT2 : seg < 2.5 ? aT3 : vec4(aT0.xyz, 1.0);
+    vec4 a = target(seg);
+    vec4 b = target(seg + 1.0);
 
     // Points leave at slightly different moments and scatter mid-flight, so shapes dissolve
     // and reassemble rather than sliding.
@@ -143,7 +146,7 @@ function Morph({
     m.uniforms.uScan.value = 1.2 - ((t * 0.45) % 2.4);
 
     // Faces look straight at the camera; the 3D chapters tilt toward it and turn slowly.
-    const objectWeight = Math.min(1, p, 4 - p);
+    const objectWeight = Math.min(1, p, clouds.t.length - p);
     g.rotation.x = 0.5 * objectWeight;
     g.rotation.y = objectWeight * (Math.sin(t * 0.25) * 0.5 + 0.35);
 
@@ -158,7 +161,7 @@ function Morph({
       <points geometry={geometry}>
         <shaderMaterial
           ref={material}
-          vertexShader={vertexShader}
+          vertexShader={vertexShader(clouds.t.length)}
           fragmentShader={fragmentShader}
           uniforms={uniforms}
           transparent
@@ -181,7 +184,14 @@ export default function StoryScene({ sample, buildings, progressRef, active, onR
         const rand = new Float32Array(n);
         for (let i = 0; i < n; i++) rand[i] = Math.random();
         setClouds({
-          t: [faceCloud(portrait, n, true), robotCloud(n), chipCloud(n), cityCloud(n, buildings)],
+          t: [
+            faceCloud(portrait, n, true),
+            robotCloud(n),
+            chipCloud(n),
+            scoreCloud(n),
+            cityCloud(n, buildings),
+            boardCloud(n),
+          ],
           rand,
         });
       })

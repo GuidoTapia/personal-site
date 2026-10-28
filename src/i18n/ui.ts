@@ -43,27 +43,37 @@ const en = {
   },
   story: {
     eyebrow: '01 · How I got here',
-    title: 'From robots to codebases.',
+    title: 'Same habit since I was 12: take it apart, then build it.',
     steps: [
       {
-        kicker: '2017 · Nagoya',
-        title: 'I started with robots.',
-        body: 'At the UCSP Robotics Research Group I led the team that won the RoboCup Junior Soccer world championship in 2017, and we took second in Montreal the year after.',
+        kicker: '2012-2018 · Arequipa to Nagoya',
+        title: 'I joined a robotics club by accident.',
+        body: 'At 12 I signed up for school groups without knowing what they were and ended up on a competition robotics team. Programming and robotics contests followed, my first world competition came in 2014, and in 2017 I led the UCSP team that won the RoboCup Junior Soccer SuperTeams world championship in Nagoya. Second in Montreal the year after.',
       },
       {
-        kicker: 'Apselom',
-        title: 'Then the hardware got real.',
-        body: 'I designed smart waste-monitoring devices and wrote the C libraries behind them, which cut their debugging time in half.',
+        kicker: '2017-2019 · Apselom, Edusoftnet',
+        title: 'Then the robots needed real hardware.',
+        body: 'I designed smart waste-monitoring devices and wrote the C libraries behind them, which cut their debugging time in half, and automated school bell systems. All while studying Computer Science at UCSP, near the top of the university-wide ranking.',
       },
       {
-        kicker: 'Designli',
-        title: 'Now I read codebases.',
-        body: 'About two prospective clients’ codebases a week, in whatever language they come in, looking for where they will break first.',
+        kicker: 'Since childhood · Music',
+        title: 'The other half of my brain plays in an orchestra.',
+        body: 'I play several instruments, compose, and arrange, and I’ve worked with Peruvian bands, mostly symphonic. Arranging is writing inside someone else’s piece: every new part has to fit what’s already there. Auditing a codebase is the same job with worse documentation.',
+      },
+      {
+        kicker: 'Now · Designli',
+        title: 'Now I read other teams’ code for a living.',
+        body: 'More than 40 prospective clients’ codebases since January 2026, in whatever language they come in, looking for where they will break first. Three years of teaching IT and robotics taught me the other half: explaining it so people act on it.',
+      },
+      {
+        kicker: 'Thesis · in progress',
+        title: 'And a tool for the smallest players.',
+        body: 'My Computer Science thesis comes from a hobby, board games: a tool that helps independent creators compete with publishers that have years of experience and far bigger budgets.',
       },
       {
         kicker: 'Next',
-        title: 'Then I help build it.',
-        body: 'Web and mobile products in React, Node.js, and React Native, with teams across the US and Europe. Same pieces, rebuilt.',
+        title: 'Then I help build yours.',
+        body: 'Web and mobile products in React, Node.js, and React Native, with teams in the US and Europe, plus freelance work for Peruvian companies. Same pieces, rebuilt so they hold up.',
       },
     ],
     // {files} is replaced at build time
@@ -164,27 +174,37 @@ const es = {
   },
   story: {
     eyebrow: '01 · Cómo llegué aquí',
-    title: 'De robots a bases de código.',
+    title: 'La misma costumbre desde los 12: desarmarlo y luego construirlo.',
     steps: [
       {
-        kicker: '2017 · Nagoya',
-        title: 'Empecé con robots.',
-        body: 'En el Grupo de Investigación en Robótica de la UCSP lideré el equipo que ganó el campeonato mundial de RoboCup Junior Soccer en 2017, y al año siguiente quedamos segundos en Montreal.',
+        kicker: '2012-2018 · De Arequipa a Nagoya',
+        title: 'Entré a la robótica por accidente.',
+        body: 'A los 12 me inscribí en grupos del colegio sin saber de qué trataban y terminé en un equipo de robótica de competencia. Vinieron concursos de programación y robótica, mi primer mundial en 2014 y, en 2017, lideré el equipo de la UCSP que ganó el campeonato mundial de RoboCup Junior Soccer SuperTeams en Nagoya. Al año siguiente quedamos segundos en Montreal.',
       },
       {
-        kicker: 'Apselom',
-        title: 'Después, hardware de verdad.',
-        body: 'Diseñé dispositivos inteligentes de monitoreo de residuos y escribí las librerías en C detrás de ellos, que redujeron su tiempo de depuración a la mitad.',
+        kicker: '2017-2019 · Apselom, Edusoftnet',
+        title: 'Después, los robots necesitaron hardware de verdad.',
+        body: 'Diseñé dispositivos inteligentes de monitoreo de residuos y escribí las librerías en C detrás de ellos, que redujeron su tiempo de depuración a la mitad, y automaticé sistemas de timbres escolares. Todo mientras estudiaba Ciencia de la Computación en la UCSP, entre los primeros puestos del ranking general de la universidad.',
       },
       {
-        kicker: 'Designli',
-        title: 'Hoy leo bases de código.',
-        body: 'Unas dos bases de código de clientes potenciales por semana, en el lenguaje que vengan, buscando dónde se van a romper primero.',
+        kicker: 'Desde niño · Música',
+        title: 'La otra mitad de mi cabeza toca en una orquesta.',
+        body: 'Toco varios instrumentos, compongo y hago arreglos, y he colaborado con bandas peruanas, sobre todo en lo sinfónico. Arreglar es escribir dentro de la obra de otro: cada parte nueva tiene que encajar con lo que ya existe. Auditar una base de código es el mismo trabajo, con peor documentación.',
+      },
+      {
+        kicker: 'Hoy · Designli',
+        title: 'Hoy leo el código de otros equipos como trabajo.',
+        body: 'Más de 40 bases de código de clientes potenciales desde enero de 2026, en el lenguaje que vengan, buscando dónde se van a romper primero. Tres años enseñando informática y robótica me dieron la otra mitad: explicarlo para que la gente actúe.',
+      },
+      {
+        kicker: 'Tesis · en curso',
+        title: 'Y una herramienta para los más pequeños.',
+        body: 'Mi tesis de Ciencia de la Computación nace de un hobby, los juegos de mesa: una herramienta para que creadores independientes compitan con editoriales con años de experiencia y presupuestos mucho mayores.',
       },
       {
         kicker: 'Lo que sigue',
-        title: 'Después ayudo a construirlo.',
-        body: 'Productos web y móviles con React, Node.js y React Native, junto a equipos en EE. UU. y Europa. Las mismas piezas, reconstruidas.',
+        title: 'Después ayudo a construir el tuyo.',
+        body: 'Productos web y móviles con React, Node.js y React Native, junto a equipos en EE. UU. y Europa, además de trabajos freelance para empresas peruanas. Las mismas piezas, reconstruidas para que aguanten.',
       },
     ],
     cityNote:

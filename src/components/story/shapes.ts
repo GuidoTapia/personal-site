@@ -254,3 +254,169 @@ export function cityCloud(n: number, buildings: Building[]): Cloud {
     ],
   ]);
 }
+
+// A bar of a score: five staff lines (bent slightly in depth so it reads as 3D), amber note
+// heads with stems, beams joining pairs, and a sustained tie arcing over the end.
+export function scoreCloud(n: number): Cloud {
+  const gap = 0.13;
+  const bend = (x: number) => -0.25 * x * x; // the page curls away at the edges
+  // Notes as [x, staff step]; step 0 is the bottom line, every step is half a gap.
+  const notes: [number, number][] = [
+    [-0.82, 2],
+    [-0.6, 4],
+    [-0.38, 3],
+    [-0.16, 6],
+    [0.06, 5],
+    [0.28, 7],
+    [0.5, 4],
+    [0.72, 2],
+  ];
+  const head = (r: () => number, e: Emit, [x, step]: [number, number]) => {
+    const a = r() * TAU;
+    const rad = Math.sqrt(r());
+    const nx = x + Math.cos(a) * rad * 0.06;
+    e(nx, -0.26 + step * (gap / 2) + Math.sin(a) * rad * 0.042, bend(nx), 1);
+  };
+  const stemTop = (step: number) => -0.26 + step * (gap / 2) + 0.36;
+  return build(n, 41, [
+    // staff lines
+    [
+      34,
+      (r, e) => {
+        const x = (r() * 2 - 1) * 1.05;
+        e(x, -0.26 + Math.floor(r() * 5) * gap, bend(x), 0);
+      },
+    ],
+    // bar lines at both ends
+    [
+      4,
+      (r, e) => {
+        const x = r() < 0.5 ? -1.05 : 1.05;
+        e(x, -0.26 + r() * 4 * gap, bend(x), 0);
+      },
+    ],
+    [30, (r, e) => head(r, e, notes[Math.floor(r() * notes.length)])],
+    // stems, on the right of each head
+    [
+      12,
+      (r, e) => {
+        const [x, step] = notes[Math.floor(r() * notes.length)];
+        const y0 = -0.26 + step * (gap / 2);
+        const sx = x + 0.055;
+        e(sx, y0 + r() * (stemTop(step) - y0), bend(sx), 0);
+      },
+    ],
+    // beams joining notes in pairs, sloped from one stem top to the next
+    [
+      14,
+      (r, e) => {
+        const k = Math.floor(r() * 4) * 2;
+        const [x1, s1] = notes[k];
+        const [x2, s2] = notes[k + 1];
+        const t = r();
+        const x = x1 + 0.055 + t * (x2 - x1);
+        const thick = r() * 0.035;
+        e(x, stemTop(s1) + t * (stemTop(s2) - stemTop(s1)) - thick, bend(x), 1);
+      },
+    ],
+    // a tie arcing over the last two notes
+    [
+      6,
+      (r, e) => {
+        const t = r();
+        const x = 0.5 + t * 0.22;
+        e(x, -0.26 + 3 * (gap / 2) - 0.08 - Math.sin(t * Math.PI) * 0.07, bend(x) + 0.02, 1);
+      },
+    ],
+  ]);
+}
+
+// A board game on the table: a hex board in wireframe with a few claimed (amber) tiles, two
+// pawns, and a die. A nod to the thesis: tools for small board game creators.
+export function boardCloud(n: number): Cloud {
+  const y = -0.4;
+  const size = 0.17; // hex radius
+  const w = Math.sqrt(3) * size;
+  const hexes: [number, number][] = [];
+  for (let q = -3; q <= 3; q++) {
+    for (let rr = Math.max(-3, -q - 3); rr <= Math.min(3, -q + 3); rr++) {
+      hexes.push([w * (q + rr / 2), 1.5 * size * rr]);
+    }
+  }
+  const claimed = new Set([4, 9, 10, 17, 22, 23, 30]);
+  const corner = (k: number) => {
+    const a = (Math.PI / 3) * k + Math.PI / 6;
+    return [Math.cos(a) * size, Math.sin(a) * size];
+  };
+  const pawns: [number, number][] = [
+    [-0.32, 0.18],
+    [0.42, -0.3],
+  ];
+  return build(n, 53, [
+    // hex outlines
+    [
+      40,
+      (r, e) => {
+        const [cx, cz] = hexes[Math.floor(r() * hexes.length)];
+        const k = Math.floor(r() * 6);
+        const [ax, az] = corner(k);
+        const [bx, bz] = corner(k + 1);
+        const t = r();
+        e(cx + ax + (bx - ax) * t, y, cz + az + (bz - az) * t, 0);
+      },
+    ],
+    // claimed tiles, filled
+    [
+      18,
+      (r, e) => {
+        const ids = [...claimed];
+        const [cx, cz] = hexes[ids[Math.floor(r() * ids.length)]];
+        const a = r() * TAU;
+        const rad = Math.sqrt(r()) * size * 0.8;
+        e(cx + Math.cos(a) * rad, y + 0.005, cz + Math.sin(a) * rad, 1);
+      },
+    ],
+    // pawns: a round head on a flared body
+    [
+      22,
+      (r, e) => {
+        const [px, pz] = pawns[Math.floor(r() * pawns.length)];
+        const a = r() * TAU;
+        if (r() < 0.4) {
+          const u = r() * 2 - 1;
+          const s = Math.sqrt(1 - u * u);
+          e(px + s * Math.cos(a) * 0.075, y + 0.36 + u * 0.075, pz + s * Math.sin(a) * 0.075, 1);
+        } else {
+          const h = r();
+          const rad = 0.13 - h * 0.09;
+          e(px + Math.cos(a) * rad, y + h * 0.3, pz + Math.sin(a) * rad, 1);
+        }
+      },
+    ],
+    // a die: cube edges with pips on the top face
+    [
+      20,
+      (r, e) => {
+        const [dx, dz, s] = [0.05, -0.62, 0.11];
+        if (r() < 0.8) {
+          const axis = Math.floor(r() * 3);
+          const t = (r() * 2 - 1) * s;
+          const a = r() < 0.5 ? -s : s;
+          const b = r() < 0.5 ? -s : s;
+          const p = axis === 0 ? [t, a, b] : axis === 1 ? [a, t, b] : [a, b, t];
+          e(dx + p[0], y + s + p[1], dz + p[2], 0);
+        } else {
+          const pips: [number, number][] = [
+            [-0.5, -0.5],
+            [0, 0],
+            [0.5, 0.5],
+          ];
+          const [ux, uz] = pips[Math.floor(r() * 3)];
+          const a = r() * TAU;
+          const rad = Math.sqrt(r()) * 0.022;
+          e(dx + ux * s + Math.cos(a) * rad, y + 2 * s, dz + uz * s + Math.sin(a) * rad, 1);
+        }
+      },
+    ],
+  ]);
+}
