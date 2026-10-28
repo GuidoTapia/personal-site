@@ -1,4 +1,4 @@
-import { css, CSSObject } from 'styled-components';
+import { css } from 'styled-components';
 
 const button = css`
   color: var(--green);
@@ -23,20 +23,7 @@ const button = css`
   }
 `;
 
-interface Mixins {
-  flexCenter: any;
-  flexBetween: any;
-  link: any;
-  inlineLink: any;
-  button: any;
-  smallButton: any;
-  bigButton: any;
-  boxShadow: any;
-  fancyList: any;
-  resetList: any;
-}
-
-const mixins: Mixins = {
+const mixins = {
   flexCenter: css`
     display: flex;
     justify-content: center;

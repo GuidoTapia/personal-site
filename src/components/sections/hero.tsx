@@ -70,9 +70,13 @@ const Hero: React.FC = () => {
   const four = (
     <>
       <p>
-        I&apos;m a full-stack engineer specializing in React and Node.js, with a background in
-        robotics and mentoring developers. Currently, I focus on delivering reliable, user-focused
-        products and mentoring the next generation of developers.
+        I&apos;m a Solutions Technical Advisor and Technical Lead at{' '}
+        <a href="https://designli.co/" target="_blank" rel="noreferrer">
+          Designli
+        </a>
+        , where I audit codebases and write the proposals that turn them into projects. Before that,
+        I spent over four years shipping React, Node.js, and React Native products for clients in
+        the US and Europe.
       </p>
     </>
   );

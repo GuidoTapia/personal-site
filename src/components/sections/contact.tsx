@@ -57,13 +57,14 @@ const Contact: React.FC = () => {
 
   return (
     <StyledContactSection id="contact" ref={revealContainer}>
-      <h2 className="numbered-heading overline">What's Next?</h2>
+      <h2 className="numbered-heading overline">What&apos;s Next?</h2>
 
       <h2 className="title">Get In Touch</h2>
 
       <p>
-        Although I'm not currently looking for any new opportunities, my inbox is always open.
-        Whether you have a question or just want to say hi, I'll try my best to get back to you!
+        I&apos;m open to remote roles in full-stack engineering, technical leadership, and solutions
+        advisory. Whether you have a role in mind, a codebase you want a second opinion on, or just
+        want to say hi, my inbox is open and I&apos;ll get back to you.
       </p>
 
       <a className="email-link" href={`mailto:${email}`}>
