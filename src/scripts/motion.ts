@@ -1,9 +1,56 @@
-// Pointer-driven effects for fine pointers only, and never under reduced motion. Elements opt in:
+// Motion helpers, never active under reduced motion.
+//
+// 1. Scroll fallback. Chrome and Edge run the scroll effects in pure CSS (animation-timeline).
+//    Elsewhere this adds .motion-fallback to <html>, marks .reveal / .section-title / .eyebrow
+//    elements .is-in as they enter the viewport, and feeds --scroll-progress (header line) and
+//    --rail-progress (experience timeline).
+//
+// 2. Pointer effects for fine pointers only. Elements opt in:
 //   [data-spotlight]  sets --mx / --my (px) for a radial highlight that follows the cursor
 //   [data-tilt]       sets --rx / --ry (deg) for a small 3D tilt
 //   .magnetic         sets --tx / --ty (px) so the element leans toward the cursor
 const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const scrollTimelines = CSS.supports('animation-timeline: view()');
+
+if (!reduced && !scrollTimelines) {
+  const root = document.documentElement;
+  root.classList.add('motion-fallback');
+
+  const seen = new IntersectionObserver(
+    entries =>
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        seen.unobserve(entry.target);
+      }),
+    { rootMargin: '0px 0px -12% 0px' },
+  );
+  document.querySelectorAll('.reveal, .section-title, .eyebrow').forEach(el => seen.observe(el));
+
+  const rail = document.querySelector<HTMLElement>('.jobs');
+  let queued = false;
+  const update = () => {
+    queued = false;
+    const max = root.scrollHeight - window.innerHeight;
+    root.style.setProperty('--scroll-progress', String(max > 0 ? window.scrollY / max : 0));
+    if (rail) {
+      // Fill the rail up to the middle of the viewport, matching the CSS range in Chrome
+      const r = rail.getBoundingClientRect();
+      const t = (window.innerHeight * 0.55 - r.top) / r.height;
+      rail.style.setProperty('--rail-progress', String(Math.min(1, Math.max(0, t))));
+    }
+  };
+  const onScroll = () => {
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(update);
+    }
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
+}
 
 if (fine && !reduced) {
   const track = (

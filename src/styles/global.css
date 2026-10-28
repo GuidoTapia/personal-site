@@ -302,9 +302,30 @@ ul {
       transform 0.2s var(--ease);
   }
 
+  /* Fallback for browsers without scroll timelines (Firefox, older Safari): motion.ts adds
+     .motion-fallback to <html> and .is-in to each element as it scrolls into view. The hidden
+     state needs that class, so content stays visible when JavaScript doesn't run. */
+  .motion-fallback :is(.reveal, .section-title, .eyebrow) {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.7s var(--ease),
+      transform 0.7s var(--ease);
+  }
+
+  .motion-fallback :is(.reveal, .section-title, .eyebrow).is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Scroll-driven rules use longhands on purpose: the CSS minifier (Lightning CSS) folds
+     `animation` + `animation-timeline` into one shorthand that browsers reject, which silently
+     disables these effects in production builds only. */
   @supports (animation-timeline: view()) {
     .reveal {
-      animation: reveal linear both;
+      animation-name: reveal;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: view();
       animation-range: entry 0% entry 40%;
     }
@@ -319,7 +340,9 @@ ul {
     /* Section titles rise out of a mask as they scroll in */
     .section-title,
     .eyebrow {
-      animation: rise linear both;
+      animation-name: rise;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: view();
       animation-range: entry 10% entry 70%;
     }

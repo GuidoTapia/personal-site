@@ -156,7 +156,9 @@ const alongside = rendered.filter(r => r.job.data.track !== 'engineering');
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .jobs::after {
-        animation: rail linear both;
+        animation-name: rail;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
         animation-timeline: --jobs;
         animation-range: cover 20% cover 75%;
       }
@@ -166,7 +168,9 @@ const alongside = rendered.filter(r => r.job.data.track !== 'engineering');
       }
 
       .job::before {
-        animation: dot linear both;
+        animation-name: dot;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
         animation-timeline: view();
         animation-range: entry 100% cover 45%;
       }
@@ -187,9 +191,24 @@ const alongside = rendered.filter(r => r.job.data.track !== 'engineering');
     }
   }
 
+  /* Without scroll timelines, src/scripts/motion.ts sets --rail-progress and marks roles .is-in.
+     With no JavaScript either, the rail is simply drawn full. */
   @supports not (animation-timeline: view()) {
     .jobs::after {
-      transform: none;
+      transform: scaleY(var(--rail-progress, 1));
+    }
+
+    .job::before {
+      transition:
+        border-color 0.4s var(--ease),
+        background-color 0.4s var(--ease),
+        box-shadow 0.4s var(--ease);
+    }
+
+    :global(.motion-fallback) .job:global(.is-in)::before {
+      border-color: var(--accent);
+      background: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-soft);
     }
   }
 
