@@ -18,7 +18,13 @@ const en = {
     technologies: 'Technologies',
     skills: 'Skills',
   },
-  nav: { work: 'Work', experience: 'Experience', about: 'About', contact: 'Contact' },
+  nav: {
+    story: 'Story',
+    work: 'Work',
+    experience: 'Experience',
+    about: 'About',
+    contact: 'Contact',
+  },
   resume: 'Resume',
   resumePdf: 'Resume (PDF)',
   resumeUrl: '/Guido-Resume-En.pdf',
@@ -48,7 +54,7 @@ const en = {
       {
         kicker: '2012-2018 · Arequipa, Nagoya, Montreal',
         title: 'A school club turned into a world title.',
-        body: 'At 12 I joined a school group without really knowing what it was, and it turned out to be a competition robotics team. Contests followed, my first world competition came in 2014, and in 2017, in my first year of Computer Science at UCSP, I led the team that won the RoboCup Junior Soccer SuperTeams world championship in Nagoya. We took second in Montreal the year after.',
+        body: 'At 12 I joined a school group without really knowing what it was, and it turned out to be a competition robotics team. Contests followed, my first world competition came in 2014, and in 2017, in my first year of Computer Science at UCSP, I led the team that won the RoboCup Junior Soccer SuperTeams world championship in Nagoya. I led it again in Montreal the year after, and we took second.',
       },
       {
         kicker: '2017-2019 · Apselom, Edusoftnet',
@@ -56,9 +62,9 @@ const en = {
         body: 'So I built devices that run every day: smart waste monitors, with C libraries that cut their debugging time in half, and school bell systems that no longer needed anyone to schedule them. All while staying near the top of the UCSP university-wide ranking.',
       },
       {
-        kicker: '2018-2021 · UCSP, La Salle, CEPROTEC',
-        title: 'Then I started teaching what I knew.',
-        body: 'Robotics at UCSP, IT at a secondary school and a technical institute. Explaining a circuit to a room of teenagers is the fastest way to find out whether you understand it, and it became the skill I leaned on most in my next job.',
+        kicker: '2018-2021 · UCSP, La Salle, CEPROTEC, freelance',
+        title: 'Then I started teaching what I knew, and building for clients.',
+        body: 'Robotics at UCSP, IT at a secondary school and a technical institute. Explaining a circuit to a room of teenagers is the fastest way to find out whether you understand it, and it became the skill I leaned on most in my next job. 2018 was also my first freelance project for a Peruvian company; there have been several since, the latest for Euterra in 2026.',
       },
       {
         kicker: '2021-2025 · RAVN, remote',
@@ -83,7 +89,7 @@ const en = {
       {
         kicker: 'Next',
         title: 'Almost 15 years later, still building.',
-        body: 'Web and mobile products in React, Node.js, and React Native, plus freelance work for Peruvian companies, for teams that want someone who reads the whole system before building on it. If that’s your team, let’s talk.',
+        body: 'Web and mobile products in React, Node.js, and React Native, for teams that want someone who reads the whole system before building on it. If that’s your team, let’s talk.',
       },
     ],
     cityNote:
@@ -158,7 +164,13 @@ const es = {
     technologies: 'Tecnologías',
     skills: 'Habilidades',
   },
-  nav: { work: 'Trabajo', experience: 'Experiencia', about: 'Sobre mí', contact: 'Contacto' },
+  nav: {
+    story: 'Historia',
+    work: 'Trabajo',
+    experience: 'Experiencia',
+    about: 'Sobre mí',
+    contact: 'Contacto',
+  },
   resume: 'CV',
   resumePdf: 'CV (PDF)',
   resumeUrl: '/Guido-Resume-Es.pdf',
@@ -188,7 +200,7 @@ const es = {
       {
         kicker: '2012-2018 · Arequipa, Nagoya, Montreal',
         title: 'Un club del colegio terminó en un título mundial.',
-        body: 'A los 12 me uní a un grupo del colegio sin saber bien de qué trataba, y resultó ser un equipo de robótica de competencia. Vinieron los concursos, mi primer mundial en 2014 y, en 2017, en mi primer año de Ciencia de la Computación en la UCSP, lideré el equipo que ganó el campeonato mundial de RoboCup Junior Soccer SuperTeams en Nagoya. Al año siguiente quedamos segundos en Montreal.',
+        body: 'A los 12 me uní a un grupo del colegio sin saber bien de qué trataba, y resultó ser un equipo de robótica de competencia. Vinieron los concursos, mi primer mundial en 2014 y, en 2017, en mi primer año de Ciencia de la Computación en la UCSP, lideré el equipo que ganó el campeonato mundial de RoboCup Junior Soccer SuperTeams en Nagoya. Al año siguiente lo volví a liderar en Montreal y quedamos segundos.',
       },
       {
         kicker: '2017-2019 · Apselom, Edusoftnet',
@@ -196,9 +208,9 @@ const es = {
         body: 'Así que construí dispositivos que funcionan todos los días: monitores inteligentes de residuos, con librerías en C que redujeron su tiempo de depuración a la mitad, y sistemas de timbres escolares que ya no necesitaban que alguien los programara a mano. Todo sin salir de los primeros puestos del ranking general de la UCSP.',
       },
       {
-        kicker: '2018-2021 · UCSP, La Salle, CEPROTEC',
-        title: 'Después empecé a enseñar lo que sabía.',
-        body: 'Robótica en la UCSP, informática en un colegio y en un instituto técnico. Explicarle un circuito a un salón de adolescentes es la forma más rápida de saber si lo entiendes, y fue la habilidad que más usé en mi siguiente trabajo.',
+        kicker: '2018-2021 · UCSP, La Salle, CEPROTEC, freelance',
+        title: 'Después empecé a enseñar lo que sabía, y a construir para clientes.',
+        body: 'Robótica en la UCSP, informática en un colegio y en un instituto técnico. Explicarle un circuito a un salón de adolescentes es la forma más rápida de saber si lo entiendes, y fue la habilidad que más usé en mi siguiente trabajo. En 2018 también hice mi primer proyecto freelance para una empresa peruana; desde entonces vinieron varios, el último para Euterra en 2026.',
       },
       {
         kicker: '2021-2025 · RAVN, remoto',
@@ -223,7 +235,7 @@ const es = {
       {
         kicker: 'Lo que sigue',
         title: 'Casi 15 años después, sigo construyendo.',
-        body: 'Productos web y móviles con React, Node.js y React Native, además de trabajos freelance para empresas peruanas, para equipos que buscan a alguien que lea el sistema completo antes de construir sobre él. Si ese es tu equipo, hablemos.',
+        body: 'Productos web y móviles con React, Node.js y React Native, para equipos que buscan a alguien que lea el sistema completo antes de construir sobre él. Si ese es tu equipo, hablemos.',
       },
     ],
     cityNote:

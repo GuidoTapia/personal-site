@@ -27,7 +27,7 @@ const { data } = entry;
 
     <header class="case__header">
       <p class="eyebrow">{data.kind === 'case-study' ? t.case.caseStudy : t.case.achievement}</p>
-      <h1>{data.title}</h1>
+      <h1 style={`view-transition-name: work-${slugOf(entry.id)}-title`}>{data.title}</h1>
       <p class="case__summary">{data.summary}</p>
       <p class="case__meta">
         {data.role} · {data.period}
@@ -52,6 +52,7 @@ const { data } = entry;
         width={Math.min(1120, data.cover.width)}
         quality={80}
         class="cover"
+        style={`view-transition-name: work-${slugOf(entry.id)}-cover`}
         loading="eager"
       />
     )}

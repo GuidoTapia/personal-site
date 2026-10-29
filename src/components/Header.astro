@@ -8,7 +8,7 @@ import { ui } from '@/i18n/ui';
 const lang = langFromUrl(Astro.url);
 const t = ui[lang];
 const home = localePath(lang, '/');
-const nav = (['work', 'experience', 'about', 'contact'] as const).map(id => ({
+const nav = (['story', 'work', 'experience', 'about', 'contact'] as const).map(id => ({
   label: t.nav[id],
   href: `${home}#${id}`,
 }));
@@ -373,21 +373,19 @@ const switcher = (Object.keys(languages) as Lang[]).map(l => ({
     color: var(--accent);
   }
 
-  @media (max-width: 760px) {
-    .nav__links,
-    .nav__resume {
-      display: none;
+  .nav__links a,
+  .brand__name {
+    white-space: nowrap;
+  }
+
+  /* Tablets and small laptops: six links, the lens, the switch, and the resume have to fit. */
+  @media (max-width: 1080px) {
+    .nav,
+    .nav__links {
+      gap: 18px;
     }
 
-    .menu {
-      display: block;
-    }
-
-    .nav {
-      gap: 12px;
-    }
-
-    /* Icon only on small screens; the label stays as the accessible name */
+    /* Icon only from here down; the label stays as the accessible name */
     .lens-toggle {
       width: 36px;
       height: 36px;
@@ -402,6 +400,21 @@ const switcher = (Object.keys(languages) as Lang[]).map(l => ({
       overflow: hidden;
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .nav__links,
+    .nav__resume {
+      display: none;
+    }
+
+    .menu {
+      display: block;
+    }
+
+    .nav {
+      gap: 12px;
     }
   }
 </style>

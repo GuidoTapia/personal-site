@@ -388,3 +388,30 @@ ul {
 .skip-link:focus {
   top: 12px;
 }
+
+/*
+ * Page transitions: the browser's own cross-document view transitions, so every page still
+ * loads for real (islands and scripts start as usual). Case-study titles and covers share a
+ * view-transition-name with their homepage card and glide between the two; the header stays
+ * put; everything else cross-fades. Browsers without support navigate normally.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+.header {
+  view-transition-name: site-header;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.28s;
+  animation-timing-function: var(--ease);
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.42s;
+  animation-timing-function: var(--ease);
+}

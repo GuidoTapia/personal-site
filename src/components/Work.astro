@@ -17,6 +17,8 @@ const achievements = work.filter(w => w.data.kind === 'achievement');
 // Source file shown by the Understand lens
 const source = (item: (typeof work)[number]) =>
   item.filePath?.replace(/^src\/content\//, '') ?? item.id;
+// Shared with WorkEntry, so the title and cover glide into the case page on navigation
+const vt = (item: (typeof work)[number], part: string) => `work-${slugOf(item.id)}-${part}`;
 ---
 
 <section id="work" class="section" data-bp="Work.astro · static HTML" aria-labelledby="work-title">
@@ -39,7 +41,7 @@ const source = (item: (typeof work)[number]) =>
               <p class="case__meta">
                 {item.data.role} · {item.data.period}
               </p>
-              <h3>{item.data.title}</h3>
+              <h3 style={`view-transition-name: ${vt(item, 'title')}`}>{item.data.title}</h3>
               <p class="case__summary">{item.data.summary}</p>
             </div>
             <span class="case__cta" aria-hidden="true">
@@ -66,11 +68,12 @@ const source = (item: (typeof work)[number]) =>
                 width={640}
                 quality={75}
                 class="extra__img"
+                style={`view-transition-name: ${vt(item, 'cover')}`}
               />
             )}
             <div class="extra__body">
               <p class="case__meta">{item.data.period}</p>
-              <h4>{item.data.title}</h4>
+              <h4 style={`view-transition-name: ${vt(item, 'title')}`}>{item.data.title}</h4>
               <p>{item.data.summary}</p>
             </div>
           </a>
